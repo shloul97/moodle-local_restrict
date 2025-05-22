@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/restrict/db" VERSION="2025040600" COMMENT="Moodle DB schema for local_restrict" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../lib/xmldb/xmldb.xsd">
+    <TABLES>
+
+        <TABLE NAME="local_restrict_users" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="email" TYPE="char" LENGTH="255" NOTNULL="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="userid" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="local_restrict_devices" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="ip" TYPE="char" LENGTH="255" NOTNULL="false" />
+                <FIELD NAME="device_number" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="labid" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+            <TABLE NAME="local_restrict_devices_status" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="status" TYPE="char" LENGTH="255" NOTNULL="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="local_restrict_exams" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="exam_id" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="labid" TYPE="int" LENGTH="10" NOTNULL="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+
+
+        <TABLE NAME="local_restrict_user_exam" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="examid" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="groupid" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="privateip" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="publicip" TYPE="int" LENGTH="10" NOTNULL="false" />
+                <FIELD NAME="status_id" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="userid, examid, groupid" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="local_restrict_labs" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="lab_name" TYPE="char" LENGTH="255" NOTNULL="false" />
+                <FIELD NAME="capacity" TYPE="int" LENGTH="10" NOTNULL="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="local_restrict_admin_devices" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="labid" TYPE="int" LENGTH="10" NOTNULL="true" />
+                <FIELD NAME="device_id" TYPE="int" LENGTH="10" NOTNULL="true" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="labid, device_id" />
+            </KEYS>
+        </TABLE>
+
+        <TABLE NAME="local_restrict_user_exam_status" COMMENT="">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
+                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" />
+            </KEYS>
+        </TABLE>
+
+
+
+        <!-- FOREIGN KEYS -->
+        <FOREIGN_KEYS>
+
+            <FOREIGN_KEY NAME="fk_user_exam_userid" TABLE="local_restrict_user_exam" FIELDS="userid"
+                         REFTABLE="local_restrict_users" REFFIELDS="userid" />
+
+            <FOREIGN_KEY NAME="fk_user_exam_privateip" TABLE="local_restrict_user_exam" FIELDS="privateip"
+                         REFTABLE="local_restrict_devices" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_user_exam_publicip" TABLE="local_restrict_user_exam" FIELDS="publicip"
+                         REFTABLE="local_restrict_devices" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_user_exam_examid" TABLE="local_restrict_user_exam" FIELDS="examid"
+                         REFTABLE="local_restrict_exams" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_devices_labid" TABLE="local_restrict_devices" FIELDS="labid"
+                         REFTABLE="local_restrict_labs" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_exams_labid" TABLE="local_restrict_exams" FIELDS="labid"
+                         REFTABLE="local_restrict_labs" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_user_exam_status" TABLE="local_restrict_user_exam" FIELDS="status_id"
+                         REFTABLE="local_restrict_user_exam_status" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_user_exam_groupid" TABLE="local_restrict_user_exam" FIELDS="groupid"
+                         REFTABLE="groups" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_admin_device_labid" TABLE="local_restrict_admin_devices" FIELDS="labid"
+                         REFTABLE="local_restrict_labs" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_admin_device_deviceid" TABLE="local_restrict_admin_devices" FIELDS="device_id"
+                         REFTABLE="local_restrict_devices" REFFIELDS="id" />
+
+            <FOREIGN_KEY NAME="fk_device_status" TABLE="local_restrict_devices" FIELDS="status"
+            REFTABLE="local_restrict_devices_status" REFFIELDS="id" />
+
+        </FOREIGN_KEYS>
+
+    </TABLES>
+</XMLDB>
