@@ -1,0 +1,81 @@
+{{!
+// This file is part of Moodle - http://moodle.org/
+//
+// Secure Exam Access plugin for Moodle
+// Copyright (C) 2025 Moayad Shloul
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ *
+ * @package   local_secureaccess
+ * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+}}
+{{!
+    @template local/secureaccess
+
+    This template renders summary information about a single quiz attempt.
+
+    Example context (json):
+    {
+
+    }
+}}
+
+
+
+<table class="table table-borderd">
+    <thead>
+        <tr class="text-center">
+            <th>
+                <input  class="me-2" type="checkbox" name="select-ip" id="select-all"/>
+                <span>Select All</span>
+            </th>
+            <th>
+                IP
+            </th>
+
+            <th>
+                Lab
+            </th>
+
+            <th>
+                Status
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+
+    </thead>
+    <tbody>
+
+        {{#tableData}}
+        <tr class="text-center" id="tr-{{{deviceId}}}">
+            <td><input type="checkbox" name="select-ip" id="{{{deviceId}}}"/> </td>
+            <td>{{deviceIp}} </td>
+            <td>{{labName}} </td>
+            <td><span class="text-{{statusClass}}" id="span-{{{deviceId}}}">{{deviceStatus}}</span></td>
+            <td>
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-{{adminBtn}} mr-2" name="admin-btn" data-id="{{{deviceId}}}" data-action="{{{dataAdmin}}}" data-lab="{{{labid}}}">{{{adminStr}}}</button>
+                    <button class="btn btn-{{btnClass}} mr-2" name="action-btn" data-id="{{{deviceId}}}" data-action="{{btnData}}">{{btnContent}}</button>
+                    <button class="btn btn-danger mr-2" name="action-btn" data-id="{{{deviceId}}}" data-action="del">Delete</button>
+
+                </div>
+            </td>
+
+        </tr>
+        {{/tableData}}
+    </tbody>
+</table>
+
+

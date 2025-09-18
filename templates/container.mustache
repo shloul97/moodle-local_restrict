@@ -1,0 +1,65 @@
+{{!
+   // This file is part of Moodle - http://moodle.org/
+    //
+    // Secure Exam Access plugin for Moodle
+    // Copyright (C) 2025 Moayad Shloul
+    //
+    // This program is free software: you can redistribute it and/or modify
+    // it under the terms of the GNU General Public License as published by
+    // the Free Software Foundation, either version 3 of the License, or
+    // (at your option) any later version.
+    //
+    // You should have received a copy of the GNU General Public License
+    // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+    /**
+    * Short description of file.
+    *
+    * @package   local_secureaccess
+    * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
+    * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+    */
+}}
+{{!
+    @template local/secureaccess
+
+    This template renders summary information about a single quiz attempt.
+
+    Example context (json):
+    {
+        context = [
+            'header' => header,
+            'form' => example_template_context
+        ];
+    }
+}}
+
+<div class="container">
+    <div class="plugin-content">
+        {{!
+            @template local_secureaccess/header
+        }}
+
+        {{#header}}
+            {{> local_secureaccess/header }}
+        {{/header}}
+
+
+
+
+        <div class="about">
+            {{!
+                @template local_secureaccess/forms
+            }}
+            <div class="msg-div">
+                <span class=""></span>
+            </div>
+            {{#form}}
+                {{> local_secureaccess/forms}}
+            {{/form}}
+        </div>
+    </div>
+</div>
+
+
+

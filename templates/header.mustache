@@ -1,0 +1,67 @@
+{{!
+// This file is part of Moodle - http://moodle.org/
+//
+// Secure Exam Access plugin for Moodle
+// Copyright (C) 2025 Moayad Shloul
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ *
+ * @package   local_secureaccess
+ * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+}}
+{{!
+    @template local/secureaccess
+
+    This template renders summary information about a single quiz attempt.
+
+    Example context (json):
+    {
+
+        $header = [
+            "insertGroup" => new moodle_url("/local/secureaccess/insert_groups.php"),
+            "insertLabs"=> new moodle_url("/local/secureaccess/insert_labs.php"),
+            "insertIp"=> new moodle_url("/local/secureaccess/insert_ranges.php"),
+            "updateLabs"=> new moodle_url("/local/secureaccess/update_labs.php"),
+            "inquiry"=> new moodle_url("/local/secureaccess/inquiry.php"),
+            "home"=> new moodle_url("/local/secureaccess/index.php")
+        ];
+    }
+}}
+
+
+
+
+<div class="plugin-menu d-flex m-3">
+<div class="menu-link flex-grow-1 p-1">
+        <a class="btn btn-light w-100 plugin-link" href="{{{home}}}">Home</a>
+    </div>
+    <div class="menu-link flex-grow-1 p-1">
+        <a class="btn btn-light w-100 plugin-link" href="{{{insertLabs}}}">Insert Labs</a>
+    </div>
+    <div class="menu-link flex-grow-1 p-1">
+        <a class="btn btn-light w-100 plugin-link" href="{{{insertIp}}}">Insert IPs</a>
+    </div>
+    <div class="menu-link flex-grow-1 p-1">
+        <a class="btn btn-light w-100 plugin-link" href="{{{insertGroup}}}">Insert Groups (Distrpute)</a>
+    </div>
+
+     <div class="menu-link flex-grow-1 p-1">
+        <a class="btn btn-light w-100 plugin-link" href="{{{updateLabs}}}">Update Labs</a>
+    </div>
+
+    <div class="menu-link flex-grow-1 p-1">
+        <a class="btn btn-light w-100 plugin-link" href="{{{inquiry}}}">Search</a>
+    </div>
+</div>
+
+

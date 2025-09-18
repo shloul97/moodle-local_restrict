@@ -1,0 +1,91 @@
+{{!
+   // This file is part of Moodle - http://moodle.org/
+    //
+    // Secure Exam Access plugin for Moodle
+    // Copyright (C) 2025 Moayad Shloul
+    //
+    // This program is free software: you can redistribute it and/or modify
+    // it under the terms of the GNU General Public License as published by
+    // the Free Software Foundation, either version 3 of the License, or
+    // (at your option) any later version.
+    //
+    // You should have received a copy of the GNU General Public License
+    // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+    /**
+    * Short description of file.
+    *
+    * @package   local_secureaccess
+    * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
+    * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+    */
+}}
+{{!
+    @template local/secureaccess
+
+    This template renders summary information about a single quiz attempt.
+
+    Example context (json):
+    {
+
+    }
+}}
+
+<div class="container">
+    <div class="plugin-content">
+        {{!
+            @template local_secureaccess/header
+        }}
+        {{#header}}
+            {{> local_secureaccess/header }}
+        {{/header}}
+
+
+
+
+        <div class="about">
+            <span id="logs-area"></span>
+            {{!
+                @template local_secureaccess/forms
+            }}
+            {{#form}}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="container labs-container mt-3">
+                            <div class="title mt-3">
+                                <h4>
+                                    Devices Filter:
+                                </h4>
+                            </div>
+                            <div class="filter-content mt-3">
+                                {{> local_secureaccess/forms}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/form}}
+
+
+            {{!
+                @template local_secureaccess/update_table
+            }}
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="container labs-container mt-3">
+                            <div class="table-content">
+                                <input type="hidden" id="sesskey" value="{{sesskey}}">
+                                {{#table}}
+                                    {{> local_secureaccess/update_table}}
+                                {{/table}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+
+
+

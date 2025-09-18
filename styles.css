@@ -1,0 +1,68 @@
+.labs-div{
+    width: 25%;
+}
+.labs-select-div{
+    width: 100%;
+    height: 250px;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    padding: 10px;
+}
+
+
+/* PLUGIN CONTENT */
+.plugin-content{
+    width: 100%;
+    background-color: #f3f3f3;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.plugin-description {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+.plugin-description h2 {
+    margin-top: 0;
+    color: #333;
+}
+.plugin-description ul {
+    padding-left: 20px;
+}
+
+.plugin-link{
+    font-size: 16pt;
+    font-weight: bold;
+}
+
+/* Update Labs Styles*/
+
+.labs-container{
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.msg-div{
+    display: none;
+    width: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+.msg-err{
+    background-color: #ff7c7c;
+    color: black;
+}
+
+.msg-success{
+    background-color: #95ff94;
+    color: black;
+}
