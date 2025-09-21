@@ -52,10 +52,10 @@ $PAGE->set_title("Restrict User");
 
 
 $PAGE->requires->jquery_plugin('ui');
-/*$PAGE->requires->js_call_amd('local_secureaccess/action', 'init', [
+$PAGE->requires->js_call_amd('local_secureaccess/action', 'init', [
     'sesskey' => sesskey()
-]);*/
-$PAGE->requires->js('/local/secureaccess/amd/src/action2.js');
+]);
+//$PAGE->requires->js('/local/secureaccess/amd/src/action2.js');
 
 //echo '<script src="/moodle/local/secureaccess/amd/src/action.js"></script>';
 

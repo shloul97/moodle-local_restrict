@@ -1,37 +1,98 @@
-define(['jquery'], function($) {
+define(['jquery', 'core/ajax'], function ($, Ajax) {
     'use strict';
     return {
-        init: function() {
-            $('.mform').submit(function(e){
-        e.preventDefault();
+        init: function () {
 
 
-        var data = $(this).serializeArray();
-        var labs = [];
+            // -------- Form Submit
+            $('.mform').submit(function (e) {
+                e.preventDefault();
 
-        $(this).find('input[name="labs[]"]:checked').each(function() {
-            labs.push($(this).val());
+                var data = $(this).serializeArray();
+                var labs = [];
 
-        });
+                $(this).find('input[name="labs[]"]:checked').each(function () {
+                    labs.push($(this).val());
+                });
 
+                if (data.length <= 3) {
+                    alert("Please Select Course and Labs");
+                    return;
+                }
 
-        if(data.length <= 3){
-            alert("Please Select Course and Labs");
-        }
-        else{
-            $.ajax({
+                var usersArgs = {
+                    courseid: parseInt(data[2].value),
+                    labs: labs
+                };
 
-                url: "classes/route/get_user.php",
-                method: 'POST',
-                data: {courseId : data[2].value, labs: labs, sesskey: data[0].value},
+                Ajax.call([{
+                    methodname: 'local_secureaccess_get_users',
+                    args: usersArgs
+                }])[0].then(function (res) {
+                    var msgDiv = $('.msg-div');
+                    msgDiv.removeClass('msg-err msg-success');
 
-                success: function() {
-                    alert("Students Distrputed to labs successfully");
-                },
+                    if (res.status === 0) {
+                        msgDiv.html(res.message).addClass('msg-err').fadeIn(200);
+                    } else {
+                        msgDiv.html(res.message).addClass('msg-success').fadeIn(200);
+                    }
+                }).catch(function (err) {
+                    let fullError = `
+                                    <div style="color:red;">
+                                        <strong>AJAX Error:</strong><br>
+                                        Message: ${err.message || 'N/A'}<br>
+                                        Status: ${err.status || 'N/A'}<br>
+                                        Status Text: ${err.statusText || 'N/A'}<br>
+                                        Response: ${err.responseText || JSON.stringify(err)}<br>
+                                        Arguments: ${JSON.stringify(usersArgs)}
+                                    </div>
+                                `;
+                    $('#ajx-err').html(fullError);
+                });
+
             });
-        }
 
-    });
+            // -------- Course Change
+            $('input[name=course]').change(function () {
+                var val = parseInt($(this).val());
+
+                // Quizes
+                var quizesArgs = {
+                    courseid: val
+                };
+                Ajax.call([{
+                    methodname: 'local_secureaccess_get_quizes',
+                    args: quizesArgs
+                }])[0].then(function (res) {
+                    let html = '';
+                    if (res.status == 1) {
+                        $.each(res.message, function (index, value) {
+                            html += `<div class="form-check form-check-inline" data-id="${index}">
+                                <input class="form-check-input" name="quizes[]" type="checkbox"
+                                id="checkbox${value.id}" value="${value.id}">
+                                <label class="form-check-label" for="checkbox${value.id}">${value.name}</label>
+                            </div>`;
+                        });
+                        $('#quizes-div').html(html);
+                    }
+
+                }).catch(function (err) {
+                    let fullError = `
+                                    <div style="color:red;">
+                                        <strong>AJAX Error:</strong><br>
+                                        Message: ${err.message || 'N/A'}<br>
+                                        Status: ${err.status || 'N/A'}<br>
+                                        Status Text: ${err.statusText || 'N/A'}<br>
+                                        Response: ${err.responseText || JSON.stringify(err)}<br>
+                                        Arguments: ${JSON.stringify(quizesArgs)}
+                                    </div>
+                                `;
+                    $('#ajx-err').html(fullError);
+                });
+            });
+
+
         }
     };
 });

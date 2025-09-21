@@ -40,6 +40,16 @@ class insert_groups extends moodleform
 
         $courseArr = array();
 
+        $err_div = '
+        <div class="title mt-3">
+                                <span id="ajx-err" class="text-danger">
+
+                                </span>
+                            </div>
+        ';
+
+        $mform->addElement('html', $err_div);
+
         $html = '<div class="dropdown-checkbox">
             <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 ' . get_string('selectcourse', 'local_secureaccess') . '

@@ -52,8 +52,8 @@ $PAGE->set_title("Add Users");
 
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->js_call_amd('local_secureaccess/selector', 'init');
-//$PAGE->requires->js_call_amd('local_secureaccess/distrpute', 'init');
-$PAGE->requires->js('/local/secureaccess/amd/src/distrpute2.js');
+$PAGE->requires->js_call_amd('local_secureaccess/distrpute', 'init');
+//$PAGE->requires->js('/local/secureaccess/amd/src/distrpute2.js');
 
 
 

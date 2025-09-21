@@ -66,6 +66,9 @@ class local_secureaccess_external extends external_api
     {
         global $DB;
 
+        $distrputed = false;
+        $err = '';
+
         $params = self::validate_parameters(self::get_users_parameters(), [
             'courseid' => $courseid,
             'labs' => $labs,
@@ -99,7 +102,6 @@ class local_secureaccess_external extends external_api
         $i = 0;
         foreach ($quizes as $quiz) {
 
-            //$sql_check = "SELECT * FROM {local_secureaccess_user_exam} WHERE ";
             $users[$i] = self::get_user_enrolled($courseId, $quiz->id);
             $i++;
 
@@ -111,9 +113,6 @@ class local_secureaccess_external extends external_api
         } else {
             $users[0] = self::get_user_enrolled($courseId, $quiz);
         }
-
-        $j = 0;
-
 
 
 
@@ -265,10 +264,13 @@ WHERE l.id $in_sql
 
 
 
+
+                //Start users Insetion
                 foreach ($availableIps as $index => $ip) {
                     if ($flawless < 0) {
                         break;
                     }
+                    //$ip = array_shift($availableIps);
 
                     $record = new stdClass();
                     $record->userid = $flat_users[$flawless]->user_id;
@@ -282,22 +284,23 @@ WHERE l.id $in_sql
                         continue;
                     }
 
+
                     try {
 
-                        $DB->insert_record('local_secureaccess_user_exam', $record);
-                        $resultArr[] = ['message' => get_string('distrputed_sucess', 'local_secureaccess')];
+                        // Inserted Records
+                        $DB->insert_record('local_secureaccess_user_exam', $record, false);
 
                         // Remove used IP so it's not reused
                         unset($availableIps[$index]);
 
+
                     } catch (Exception $e) {
-                        $resultArr[] = [
-                            'message' => 'User ' . $record->userid . ' already distributed',
-                            'error' => $e->getMessage(),
-                            'code' => $e->getCode(),
-                            'file' => $e->getFile(),
-                            'line' => $e->getLine()
-                        ];
+                        $distrputed = false;
+
+                        $err = $e->getTraceAsString();
+
+                        return ['status' => 0, 'message' => 'error : ' . $e->getTraceAsString()];
+
                     }
                     $flawless--;
                 }
@@ -305,23 +308,9 @@ WHERE l.id $in_sql
 
             return ['status' => 1, 'message' => get_string('distrputed_sucess', 'local_secureaccess')];
 
+
+
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 
@@ -385,7 +374,7 @@ WHERE l.id $in_sql
         JOIN {course} c ON c.id = e.courseid
         JOIN {quiz} q ON q.course = c.id
         JOIN {groups_members} gm ON gm.userid = u.id
-        WHERE c.id = ? AND q.id = ? and q.id != 86
+        WHERE c.id = ? AND q.id = ?
         AND gm.groupid ' . $in_sql . '
         ORDER BY u.id';
 
@@ -407,7 +396,7 @@ WHERE l.id $in_sql
             JOIN mdl_quiz q ON q.course = c.id
             JOIN mdl_groups g ON g.courseid = c.id
             JOIN mdl_groups_members gm ON gm.userid = u.id AND gm.groupid= g.id
-            WHERE q.id = ? and q.id != 86
+            WHERE q.id = ?
             ORDER BY u.id
         ', [
                 (int) $courseid,
@@ -592,7 +581,11 @@ WHERE l.id $in_sql
         if (!empty($quizes_list)) {
             return ['status' => 1, 'message' => $quizes_arr];
         } else {
-            return ['status' => 0, 'message' => 'No quizzes found'];
+            $quizes_list[] = [
+                'id' => 0,
+                'name' => 'No Quizes'
+            ];
+            return ['status' => 0, 'message' => $quizes_list];
         }
 
     }
@@ -662,10 +655,10 @@ WHERE l.id $in_sql
             'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
             'message' => new external_value(PARAM_TEXT, 'Result message'),
             'results' => new external_multiple_structure(
-                new external_value(PARAM_RAW, 'Details of distribution'),
-                'Optional result details',
-                VALUE_OPTIONAL
-            )
+                    new external_value(PARAM_RAW, 'Details of distribution'),
+                    'Optional result details',
+                    VALUE_OPTIONAL
+                )
         ]);
     }
 
@@ -675,12 +668,12 @@ WHERE l.id $in_sql
         return new external_single_structure([
             'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
             'message' => new external_multiple_structure(
-                new external_single_structure([
-                    'id' => new external_value(PARAM_INT, 'Quiz ID'),
-                    'name' => new external_value(PARAM_TEXT, 'Quiz name'),
+                    new external_single_structure([
+                        'id' => new external_value(PARAM_INT, 'Quiz ID'),
+                        'name' => new external_value(PARAM_TEXT, 'Quiz name'),
 
-                ])
-            )
+                    ])
+                )
         ]);
     }
 
