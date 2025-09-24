@@ -22,7 +22,7 @@
 
  defined('MOODLE_INTERNAL') || die();
 
- $plugin->version = 2025060428;
+ $plugin->version = 2025060429;
  $plugin->requires = 2023042400; // Moodle 4.2.
  $plugin->component = 'local_restrict';
  $plugin->maturity = MATURITY_BETA;
