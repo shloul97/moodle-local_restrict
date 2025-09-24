@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,7 +35,7 @@ class update_labs extends moodleform {
 
 
 
-        $records = $DB->get_records('local_secureaccess_labs');
+        $records = $DB->get_records('local_restrict_labs');
         $options = array('' => 'Select a lab'); // Blank value with a prompt
 
         foreach ($records as $choice) {
@@ -43,15 +43,15 @@ class update_labs extends moodleform {
         }
 
 
-        $mform->addElement('select','labid',get_string('labname', 'local_secureaccess'),$options);
+        $mform->addElement('select','labid',get_string('labname', 'local_restrict'),$options);
         $mform->setType('labid', paramtype: PARAM_TEXT);
 
 
-        $mform->addElement('text','deviceip',get_string('device_ip', 'local_secureaccess'));
+        $mform->addElement('text','deviceip',get_string('device_ip', 'local_restrict'));
         $mform->setType('deviceip', PARAM_TEXT);
 
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('filter', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('filter', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 

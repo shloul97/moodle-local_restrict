@@ -15,7 +15,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -41,7 +41,7 @@ $PAGE->set_context(context_system::instance());
 
 
 
-$PAGE->set_url(new moodle_url("/local/secureaccess/index.php"));
+$PAGE->set_url(new moodle_url("/local/restrict/index.php"));
 
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title("Secure Exam Access");
@@ -50,15 +50,15 @@ $PAGE->set_title("Secure Exam Access");
 
 $templatecontext = [
 
-    "insertGroup" => new moodle_url("/local/secureaccess/insert_groups.php"),
-    "insertLabs"=> new moodle_url("/local/secureaccess/insert_labs.php"),
-    "insertIp"=> new moodle_url("/local/secureaccess/insert_ranges.php"),
-    "updateLabs"=> new moodle_url("/local/secureaccess/update_labs.php"),
-    "inquiry"=> new moodle_url("/local/secureaccess/inquiry.php"),
-    "home"=> new moodle_url("/local/secureaccess/index.php")
+    "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
+    "insertLabs"=> new moodle_url("/local/restrict/insert_labs.php"),
+    "insertIp"=> new moodle_url("/local/restrict/insert_ranges.php"),
+    "updateLabs"=> new moodle_url("/local/restrict/update_labs.php"),
+    "inquiry"=> new moodle_url("/local/restrict/inquiry.php"),
+    "home"=> new moodle_url("/local/restrict/index.php")
 ];
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('local_secureaccess/home',$templatecontext);
+echo $OUTPUT->render_from_template('local_restrict/home',$templatecontext);
 echo $OUTPUT->footer();
 

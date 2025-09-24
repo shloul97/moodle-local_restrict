@@ -15,7 +15,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,9 +24,9 @@ defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) { // Only show for admins
     $ADMIN->add('localplugins', new admin_externalpage(
-        'local_secureaccess', // Unique page ID
-        get_string('pluginname', 'local_secureaccess'), // Display name
-        new moodle_url('/local/secureaccess/index.php') // Where the link points
+        'local_restrict', // Unique page ID
+        get_string('pluginname', 'local_restrict'), // Display name
+        new moodle_url('/local/restrict/index.php') // Where the link points
     ));
 }
 

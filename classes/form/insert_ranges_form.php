@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,11 +33,11 @@ class insert_ranges extends moodleform {
 
         $mform = $this->_form;
 
-        $mform->addElement('header', 'autoHeader', get_string('auto_insertion_header', 'local_secureaccess'));
+        $mform->addElement('header', 'autoHeader', get_string('auto_insertion_header', 'local_restrict'));
         $mform->setExpanded('autoHeader', false); //
 
 
-        $records = $DB->get_records('local_secureaccess_labs');
+        $records = $DB->get_records('local_restrict_labs');
 
 
 
@@ -54,17 +54,17 @@ class insert_ranges extends moodleform {
         $mform->addRule('labid', get_string('required'), 'required', null, 'client');
 
 
-        $mform->addElement('text','ipstart',get_string('ipstart', 'local_secureaccess'));
+        $mform->addElement('text','ipstart',get_string('ipstart', 'local_restrict'));
         $mform->settype('text', PARAM_NOTAGS);
         $mform->addRule('ipstart', get_string('required'), 'required', null, 'client');
 
-        $mform->addElement('text','ipend',get_string('ipend', 'local_secureaccess'));
+        $mform->addElement('text','ipend',get_string('ipend', 'local_restrict'));
         $mform->settype('text', PARAM_NOTAGS);
         $mform->addRule('ipend', get_string('required'), 'required', null, 'client');
 
 
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 

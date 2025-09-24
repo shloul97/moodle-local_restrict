@@ -14,13 +14,13 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 }}
 {{!
-    @template local/secureaccess
+    @template local/restrict
 
     This template renders summary information about a single quiz attempt.
 
@@ -51,17 +51,17 @@
                 <span>Select All</span>
             </th>
             <th>
-                {{#str}} course_table_moodleid, local_secureaccess {{/str}}
+                {{#str}} course_table_moodleid, local_restrict {{/str}}
             </th>
 
             <th>
-                {{#str}} course_table_id, local_secureaccess {{/str}}
+                {{#str}} course_table_id, local_restrict {{/str}}
             </th>
             <th>
-                {{#str}} course_table_name, local_secureaccess {{/str}}
+                {{#str}} course_table_name, local_restrict {{/str}}
             </th>
             <th>
-                {{#str}} action, local_secureaccess {{/str}}
+                {{#str}} action, local_restrict {{/str}}
             </th>
         </tr>
 
@@ -78,7 +78,7 @@
             <td>
                 <div class="d-flex justify-content-center">
 
-                    <button class="btn btn-danger mr-2" name="action-btn" data-id="{{{courseid}}}" data-action="del">Delete</button>
+                    <button class="btn btn-danger mr-2" name="action-btn" data-id="{{{courseid}}}" data-action="del">{{#str}} delete, local_restrict {{/str}}</button>
 
                 </div>
             </td>

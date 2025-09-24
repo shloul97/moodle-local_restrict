@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -22,8 +22,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
-
-
 
 class add_user extends moodleform {
 
@@ -33,16 +31,16 @@ class add_user extends moodleform {
 
         $mform = $this->_form;
 
-        $mform->addElement('text','name',get_string('labname', 'local_secureaccess'));
+        $mform->addElement('text','name',get_string('labname', 'local_restrict'));
         $mform->settype('text', PARAM_NOTAGS);
 
-        $mform->addElement('text','ipstart',get_string('ipstart', 'local_secureaccess'));
+        $mform->addElement('text','ipstart',get_string('ipstart', 'local_restrict'));
         $mform->settype('text', PARAM_NOTAGS);
 
-        $mform->addElement('text','ipend',get_string('ipend', 'local_secureaccess'));
+        $mform->addElement('text','ipend',get_string('ipend', 'local_restrict'));
         $mform->settype('text', PARAM_NOTAGS);
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 

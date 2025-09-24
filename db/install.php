@@ -15,36 +15,40 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-function xmldb_local_secureaccess_install() {
+function xmldb_local_restrict_install() {
 
-    InsertUserStatus();
-    InsertDeviceStatus();
+    insert_user_status();
+    insert_device_status();
 }
 
 
-function InsertUserStatus(): void {
+// Add status value to use in user exams { 0 => Exam end , 1 => Exam active}
+function insert_user_status(): void {
     global $DB;
-    $recordsUserStatus[] = (object) [
+    $records_user_status[] = (object) [
         'code' => 0,
         'status' => 'Inactive'
     ];
 
-    $recordsUserStatus[] = (object) [
+    $records_user_status[] = (object) [
         'code' => 1,
         'status' => 'Active'
     ];
 
-    $DB->insert_records('local_secureaccess_user_exam_status', $recordsUserStatus);
+
+    $DB->insert_records('local_restrict_user_exam_status', $records_user_status);
 }
 
-function InsertDeviceStatus() {
+
+// Add status value to use in devices { 0 => suspended , 1 => Active}
+function insert_device_status() {
     global $DB;
     $records[] = (object) [
         'code' => 0,
@@ -56,5 +60,5 @@ function InsertDeviceStatus() {
         'status' => 'Active'
     ];
 
-    $DB->insert_records('local_secureaccess_devices_status', $records);
+    $DB->insert_records('local_restrict_devices_status', $records);
 }

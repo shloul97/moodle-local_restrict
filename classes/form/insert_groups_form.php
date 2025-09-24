@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -38,8 +38,7 @@ class insert_groups extends moodleform
         $records = $DB->get_records('course');
 
 
-        $courseArr = array();
-
+        // Errors div display (Work with debugging)
         $err_div = '
         <div class="title mt-3">
                                 <span id="ajx-err" class="text-danger">
@@ -50,9 +49,10 @@ class insert_groups extends moodleform
 
         $mform->addElement('html', $err_div);
 
+        // Courses Dropdown Menu
         $html = '<div class="dropdown-checkbox">
             <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                ' . get_string('selectcourse', 'local_secureaccess') . '
+                ' . get_string('selectcourse', 'local_restrict') . '
             </button>
             <div class="dropdown-menu p-3" aria-labelledby="dropdownMenu">
                 <!-- Search input for filtering options -->
@@ -63,7 +63,8 @@ class insert_groups extends moodleform
 
                 ';
 
-        $i = 0;
+
+        // Sort courses in dropdown menu
         foreach ($records as $choice) {
 
             $html .= '<label class="dropdown-item">
@@ -86,40 +87,34 @@ class insert_groups extends moodleform
 
         $mform->addElement('html', $html);
 
-        $htmlQuizes = '
+
+        // Display Quizes in course
+        $html_quizes = '
         <div class="my-3">
-            <h4>Distpute By Quiz:</h4>
+            <h4>'.get_string('quiz_distrputed_header','local_restrict').':</h4>
         </div>
         <div class="quizes-div mt-3" id="quizes-div">
 
         </div>
         ';
 
-        $mform->addElement('html', $htmlQuizes);
-
-        $htmlGroups = '
-        <div class="my-3">
-            <h4>Distpute By Groups:</h4>
-        </div>
-        <div class="groups-div mt-3" id="groups-div">
-
-        </div>
-        ';
-
-        $mform->addElement('html', $htmlGroups);
+        $mform->addElement('html', $html_quizes);
 
 
-        $htmlLabs = ' <div class="labs-div mt-3">
+
+
+        // Display Labs
+        $html_labs = ' <div class="labs-div mt-3">
             <div class="labs-label-div">
                 <h4>Select Labs: </h4>
             </div>
             <div class="labs-select-div">
             ';
 
-        $records_labs = $DB->get_records('local_secureaccess_labs');
+        $records_labs = $DB->get_records('local_restrict_labs');
 
         foreach ($records_labs as $choice) {
-            $htmlLabs .= '<div class="form-check d-flex flex-column justify-content-right">
+            $html_labs .= '<div class="form-check d-flex flex-column justify-content-right">
                    <input class="form-check-input" name="labs[]" type="checkbox" value="' . $choice->id . '" id="lab-' . $choice->id . '">
                 <label class="form-check-label" for="lab-' . $choice->id . '">
                   ' . $choice->lab_name . '
@@ -130,14 +125,14 @@ class insert_groups extends moodleform
 
 
 
-        $htmlLabs .= '</div>
+        $html_labs .= '</div>
         </div>';
 
-        $mform->addElement('html', $htmlLabs);
+        $mform->addElement('html', $html_labs);
 
 
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('distrbute_btn', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('distrbute_btn', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 

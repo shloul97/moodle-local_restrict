@@ -14,14 +14,14 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
 
-namespace local_secureaccess\privacy;
+namespace local_restrict\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
@@ -31,7 +31,7 @@ use core_privacy\local\request\writer;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy API provider for local_secureaccess.
+ * Privacy API provider for local_restrict.
  */
 class provider implements
     \core_privacy\local\metadata\provider,
@@ -45,16 +45,16 @@ class provider implements
      */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
-            'local_secureaccess_user_exam',
+            'local_restrict_user_exam',
             [
-                'userid'    => 'privacy:metadata:local_secureaccess_user_exam:userid',
-                'examid'    => 'privacy:metadata:local_secureaccess_user_exam:examid',
-                'groupid'   => 'privacy:metadata:local_secureaccess_user_exam:groupid',
-                'privateip' => 'privacy:metadata:local_secureaccess_user_exam:privateip',
-                'publicip'  => 'privacy:metadata:local_secureaccess_user_exam:publicip',
-                'status_id' => 'privacy:metadata:local_secureaccess_user_exam:statusid',
+                'userid'    => 'privacy:metadata:local_restrict_user_exam:userid',
+                'examid'    => 'privacy:metadata:local_restrict_user_exam:examid',
+                'groupid'   => 'privacy:metadata:local_restrict_user_exam:groupid',
+                'privateip' => 'privacy:metadata:local_restrict_user_exam:privateip',
+                'publicip'  => 'privacy:metadata:local_restrict_user_exam:publicip',
+                'status_id' => 'privacy:metadata:local_restrict_user_exam:statusid',
             ],
-            'privacy:metadata:local_secureaccess_user_exam'
+            'privacy:metadata:local_restrict_user_exam'
         );
         return $collection;
     }
@@ -71,7 +71,7 @@ class provider implements
 
         $sql = "SELECT ctx.id
                   FROM {context} ctx
-                  JOIN {local_secureaccess_user_exam} ue ON ue.userid = :userid
+                  JOIN {local_restrict_user_exam} ue ON ue.userid = :userid
                  WHERE ctx.contextlevel = :systemlevel";
 
         $params = [
@@ -93,7 +93,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            $records = $DB->get_records('local_secureaccess_user_exam', ['userid' => $userid]);
+            $records = $DB->get_records('local_restrict_user_exam', ['userid' => $userid]);
             if ($records) {
                 writer::with_context($context)->export_data(
                     ['Secure Exam Access'],
@@ -112,7 +112,7 @@ class provider implements
         global $DB;
 
         if ($context->contextlevel == CONTEXT_SYSTEM) {
-            $DB->delete_records('local_secureaccess_user_exam');
+            $DB->delete_records('local_restrict_user_exam');
         }
     }
 
@@ -125,7 +125,7 @@ class provider implements
         global $DB;
 
         foreach ($contextlist->get_userids() as $userid) {
-            $DB->delete_records('local_secureaccess_user_exam', ['userid' => $userid]);
+            $DB->delete_records('local_restrict_user_exam', ['userid' => $userid]);
         }
     }
 
@@ -139,7 +139,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            $DB->delete_records('local_secureaccess_user_exam', ['userid' => $userid]);
+            $DB->delete_records('local_restrict_user_exam', ['userid' => $userid]);
         }
     }
 }

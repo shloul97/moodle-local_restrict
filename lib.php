@@ -15,7 +15,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +25,7 @@
 require_once($CFG->dirroot . '/config.php');
 
 
-function local_secureaccess_before_footer()
+function local_restrict_before_footer()
 {
 	global $USER, $DB;
 
@@ -38,12 +38,12 @@ function local_secureaccess_before_footer()
 		$userid = $USER->id;
 
 		$public_ip = false;
-		if ($DB->get_manager()->table_exists('local_secureaccess_devices')) {
+		if ($DB->get_manager()->table_exists('local_restrict_devices')) {
 			$public_devices = $DB->get_records_sql('SELECT d.ip
-				FROM {local_secureaccess_devices} d
-				JOIN  {local_secureaccess_admin_devices} ad
+				FROM {local_restrict_devices} d
+				JOIN  {local_restrict_admin_devices} ad
 				ON d.id = ad.device_id
-				JOIN {local_secureaccess_labs} lb
+				JOIN {local_restrict_labs} lb
 				ON ad.labid = lb.id', []);
 
 			foreach ($public_devices as $pdevice) {
@@ -60,29 +60,29 @@ function local_secureaccess_before_footer()
 
 				$roles = get_user_roles($context, $USER->id);
 
-				$hasRole = false;
+				$has_role = false;
 				foreach ($roles as $role) {
 					if (in_array($role->shortname, ['teacher', 'manager', 'coursecreator', 'editingteacher'])) {
-						$hasRole = true;
+						$has_role = true;
 
 						break;
 					}
 				}
 
-				if (!$hasRole && !is_siteadmin($userid)) {
+				if (!$has_role && !is_siteadmin($userid)) {
                 // ? Get all allowed IPs for the user.
                 $user_devices = $DB->get_records_sql('
                     SELECT d.ip
-                      FROM {local_secureaccess_user_exam} u
-                      JOIN {local_secureaccess_devices} d ON u.privateip = d.id
+                      FROM {local_restrict_user_exam} u
+                      JOIN {local_restrict_devices} d ON u.privateip = d.id
                       join mdl_quiz q on q.id = u.examid
                      WHERE u.userid = ? and q.timeopen < UNIX_TIMESTAMP() + 1800 and q.timeclose > UNIX_TIMESTAMP()
                 ', [$userid]);
 
 				// $user_devices = $DB->get_records_sql('
                 //     SELECT d.ip
-                //       FROM {local_secureaccess_user_exam} u
-                //       JOIN {local_secureaccess_devices} d ON u.privateip = d.id
+                //       FROM {local_restrict_user_exam} u
+                //       JOIN {local_restrict_devices} d ON u.privateip = d.id
                 //      WHERE u.userid = ?'
 				// 	  ,[$userid]);
 

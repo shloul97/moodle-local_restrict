@@ -15,7 +15,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,7 +23,7 @@
 
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/local/secureaccess/classes/form/update_labs_form.php');
+require_once($CFG->dirroot . '/local/restrict/classes/form/update_labs_form.php');
 
 require_login();
 
@@ -42,7 +42,7 @@ $PAGE->set_context(context_system::instance());
 
 
 
-$PAGE->set_url(new moodle_url("/local/secureaccess/index.php"));
+$PAGE->set_url(new moodle_url("/local/restrict/index.php"));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title("Restrict User");
@@ -52,16 +52,16 @@ $PAGE->set_title("Restrict User");
 
 
 $PAGE->requires->jquery_plugin('ui');
-$PAGE->requires->js_call_amd('local_secureaccess/action', 'init', [
+$PAGE->requires->js_call_amd('local_restrict/action', 'init', [
     'sesskey' => sesskey()
 ]);
-//$PAGE->requires->js('/local/secureaccess/amd/src/action2.js');
+//$PAGE->requires->js('/local/restrict/amd/src/action2.js');
 
-//echo '<script src="/moodle/local/secureaccess/amd/src/action.js"></script>';
+//echo '<script src="/moodle/local/restrict/amd/src/action.js"></script>';
 
 $mform = new update_labs();
 
-$dataArr = array();
+$data_array = array();
 
 if ($mform->is_cancelled()) {
 
@@ -83,7 +83,7 @@ if ($mform->is_cancelled()) {
         $records = '';
 
 
-        $labadmin = $DB->get_records_sql("SELECT device_id, labid FROM {local_secureaccess_admin_devices} WHERE labid = ?",
+        $labadmin = $DB->get_records_sql("SELECT device_id, labid FROM {local_restrict_admin_devices} WHERE labid = ?",
         [$record->labid]);
         $params = [$record->labid];
 
@@ -96,86 +96,90 @@ if ($mform->is_cancelled()) {
         if ($record->labid != '' && $record->ip != '') {
 
 
-            $data = $DB->get_records('local_secureaccess_devices', [
+            $data = $DB->get_records('local_restrict_devices', [
                 'ip' => $record->ip,
                 'labid' => $record->labid,
             ]);
         } else if ($record->labid != '' && $record->ip == '') {
 
-            $data = $DB->get_records('local_secureaccess_devices', [
+            $data = $DB->get_records('local_restrict_devices', [
                 'labid' => $record->labid,
 
             ]);
         } else if ($record->labid == '' && $record->ip != '') {
-            $data = $DB->get_records('local_secureaccess_devices', [
+            $data = $DB->get_records('local_restrict_devices', [
                 'ip' => $record->ip,
             ]);
         }
 
 
-
+        // Set data for device admin status
         foreach ($data as $device) {
 
-            $adminClass;
-            $dataAdmin = '';
-            $adminId = [];
-            $adminStr = '';
+            $admin_class;
+            $data_admin = '';
+            $admin_id = [];
+            $admin_string = '';
 
             foreach ($labadmin as $adminDevices) {
 
+                //if admin devices table has selected device send data to make sure user can remove it
                 if ($device->id == $adminDevices->device_id){
-                    $adminClass = "secondary";
-                    $adminStr = "Remove Admin";
-                    $dataAdmin = "rmadmin";
+                    $admin_class = "secondary"; /* => button class btn-{{}}*/
+                    $admin_string = "Remove Admin"; /* => button value */
+                    $data_admin = "rmadmin"; /* => button data-action to use in JS */
                     break;
                 }
+                // If admin devices table doesn't has selected device send data to make sure user can add it
                 else{
-                    $adminClass = "primary";
-                    $adminStr = "Make Admin";
-                    $dataAdmin = "mkadmin";
+                    $admin_class = "primary"; /* => button class btn-{{}}*/
+                    $admin_string = "Make Admin"; /* => button value */
+                    $data_admin = "mkadmin"; /* => button data-action to use in JS */
                 }
             }
 
 
 
-
+            // Check if device active or suspended
             if ($device->status == 1) {
-                $deviceStatus = 'Active';
-                $statusClass = "success";
-                $btnClass = "warning";
-                $btnContent = "Suspend";
-                $btnData = "sus";
+                $device_status = 'Active'; /* => span value */
+                $status_class = "success"; /* => span class btn-{{}}*/
+                $btn_class = "warning"; /* => button class btn-{{}}*/
+                $btn_content = "Suspend"; /* => button value */
+                $btn_data = "sus"; /* => button data-action to use in JS */
 
 
 
             } else {
-                $deviceStatus = 'Inactive';
-                $statusClass = "danger";
-                $btnClass = "success";
-                $btnContent = "Activate";
-                $btnData = "act";
+                $device_status = 'Inactive';
+                $status_class = "danger";
+                $btn_class = "success";
+                $btn_content = "Activate";
+                $btn_data = "act";
 
             }
-            $dataArr[] = [
+
+            // Data to send using ajax
+            $data_array[] = [
 
                 'deviceId' => $device->id,
                 'deviceIp' => $device->ip,
                 'labName' => $labname,
-                'deviceStatus' => $deviceStatus,
-                'statusClass' => $statusClass,
-                'btnClass' => $btnClass,
-                'btnContent' => $btnContent,
-                'btnData' => $btnData,
-                'adminBtn' => $adminClass,
-                'adminStr' => $adminStr,
-                'dataAdmin' => $dataAdmin,
+                'device_status' => $device_status,
+                'status_class' => $status_class,
+                'btn_class' => $btn_class,
+                'btn_content' => $btn_content,
+                'btn_data' => $btn_data,
+                'adminBtn' => $admin_class,
+                'admin_string' => $admin_string,
+                'data_admin' => $data_admin,
                 'labid' => $labid
             ];
         }
 
         $data1 = [
             'table' => [
-                'tableData' => $dataArr
+                'tableData' => $data_array
             ]
         ];
 
@@ -185,7 +189,7 @@ if ($mform->is_cancelled()) {
 
 
     } catch (Exception $e) {
-        \core\notification::error(get_string('failed_lab_insertion', 'local_secureaccess'));
+        \core\notification::error(get_string('failed_lab_insertion', 'local_restrict'));
     }
 
 
@@ -201,12 +205,12 @@ $templatecontext = [
 ];
 
 $header = [
-    "insertGroup" => new moodle_url("/local/secureaccess/insert_groups.php"),
-    "insertLabs" => new moodle_url("/local/secureaccess/insert_labs.php"),
-    "insertIp" => new moodle_url("/local/secureaccess/insert_ranges.php"),
-    "updateLabs" => new moodle_url("/local/secureaccess/update_labs.php"),
-    "inquiry" => new moodle_url("/local/secureaccess/inquiry.php"),
-    "home" => new moodle_url("/local/secureaccess/index.php")
+    "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
+    "insertLabs" => new moodle_url("/local/restrict/insert_labs.php"),
+    "insertIp" => new moodle_url("/local/restrict/insert_ranges.php"),
+    "updateLabs" => new moodle_url("/local/restrict/update_labs.php"),
+    "inquiry" => new moodle_url("/local/restrict/inquiry.php"),
+    "home" => new moodle_url("/local/restrict/index.php")
 ];
 $context = [
     'form' => [$templatecontext],
@@ -218,8 +222,8 @@ $context = [
 
 echo $OUTPUT->header();
 
-//echo $OUTPUT->render_from_template('local_secureaccess/insert_ranges',$context);
-echo $OUTPUT->render_from_template('local_secureaccess/update_labs', $context);
+//echo $OUTPUT->render_from_template('local_restrict/insert_ranges',$context);
+echo $OUTPUT->render_from_template('local_restrict/update_labs', $context);
 
 echo $OUTPUT->footer();
 

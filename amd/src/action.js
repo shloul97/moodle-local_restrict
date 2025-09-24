@@ -24,7 +24,7 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                         };
 
                         Ajax.call([{
-                            methodname: 'local_secureaccess_update_labs',
+                            methodname: 'local_restrict_update_labs',
                             args: requestArgs
                         }])[0].then(function () {
                             $('#tr-' + deviceId).fadeOut(300);
@@ -49,7 +49,7 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                     };
 
                     Ajax.call([{
-                        methodname: 'local_secureaccess_update_labs',
+                        methodname: 'local_restrict_update_labs',
                         args: requestArgs
                     }])[0].then(function () {
                         if (action != 'del') {
@@ -112,7 +112,7 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                     };
 
                     Ajax.call([{
-                        methodname: 'local_secureaccess_update_labs',
+                        methodname: 'local_restrict_update_labs',
                         args: requestArgs
                     }])[0].then(function (e) {
 
@@ -165,7 +165,7 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                     };
 
                     Ajax.call([{
-                        methodname: 'local_secureaccess_update_labs',
+                        methodname: 'local_restrict_update_labs',
                         args: requestArgs
                     }])[0].then(function (e) {
                         $('#tr-' + deviceId).fadeOut(300);
@@ -189,7 +189,7 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                 };
 
                 Ajax.call([{
-                    methodname: 'local_secureaccess_update_labs',
+                    methodname: 'local_restrict_update_labs',
                     args: requestArgs
                 }])[0].then(function (e) {
                     if (action != 'del') {
@@ -253,7 +253,7 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                 };
 
                 Ajax.call([{
-                    methodname: 'local_secureaccess_update_labs',
+                    methodname: 'local_restrict_update_labs',
                     args: requestArgs
                 }])[0].then(function (e) {
                     console.log(e);

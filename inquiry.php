@@ -15,7 +15,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -23,7 +23,7 @@
 
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/local/secureaccess/classes/form/inquiry_form.php');
+require_once($CFG->dirroot . '/local/restrict/classes/form/inquiry_form.php');
 
 require_login();
 
@@ -46,15 +46,14 @@ $mform = new inquiry();
 
 
 
-$PAGE->set_url(new moodle_url("/local/secureaccess/index.php"));
+$PAGE->set_url(new moodle_url("/local/restrict/inquiry.php"));
 
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title("Secure Exam Access | inqury");
 
 
 $PAGE->requires->jquery_plugin('ui');
-
-$PAGE->requires->js('/local/secureaccess/amd/src/courses.js');
+$PAGE->requires->js_call_amd('local_restrict/courses', 'init');
 
 
 
@@ -70,7 +69,7 @@ if ($mform->is_cancelled()) {
 
 
 
-    $labIps = $DB->get_records_select('local_secureaccess_devices', 'labid = ?', [1]);
+    $lab_ips = $DB->get_records_select('local_restrict_devices', 'labid = ?', [1]);
 
     $record = new stdClass();
     $record->course = $fromform->course;
@@ -100,9 +99,9 @@ if ($mform->is_cancelled()) {
 }else{
 
     $records = $DB->get_records_sql('SELECT  c.id,c.idnumber, c.fullname
-        FROM mdl_local_secureaccess_user_exam ue
-        JOIN mdl_local_secureaccess_devices d ON ue.privateip = d.id
-        JOIN mdl_local_secureaccess_labs l ON d.labid = l.id
+        FROM mdl_local_restrict_user_exam ue
+        JOIN mdl_local_restrict_devices d ON ue.privateip = d.id
+        JOIN mdl_local_restrict_labs l ON d.labid = l.id
         JOIN mdl_quiz q on ue.examid = q.id
         JOIN mdl_course c on q.course = c.id
         JOIN mdl_groups g on g.id = ue.groupid
@@ -146,12 +145,12 @@ if ($mform->is_cancelled()) {
 
 $header = [
 
-    "insertGroup" => new moodle_url("/local/secureaccess/insert_groups.php"),
-    "insertLabs" => new moodle_url("/local/secureaccess/insert_labs.php"),
-    "insertIp" => new moodle_url("/local/secureaccess/insert_ranges.php"),
-    "updateLabs" => new moodle_url("/local/secureaccess/update_labs.php"),
-    "inquiry" => new moodle_url("/local/secureaccess/inquiry.php"),
-    "home" => new moodle_url("/local/secureaccess/index.php")
+    "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
+    "insertLabs" => new moodle_url("/local/restrict/insert_labs.php"),
+    "insertIp" => new moodle_url("/local/restrict/insert_ranges.php"),
+    "updateLabs" => new moodle_url("/local/restrict/update_labs.php"),
+    "inquiry" => new moodle_url("/local/restrict/inquiry.php"),
+    "home" => new moodle_url("/local/restrict/index.php")
 ];
 
 /*$context = [
@@ -170,6 +169,6 @@ $context = [
 
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('local_secureaccess/search', $context);
+echo $OUTPUT->render_from_template('local_restrict/search', $context);
 echo $OUTPUT->footer();
 

@@ -14,20 +14,20 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
-namespace local_secureaccess\task;
+namespace local_restrict\task;
 
 defined('MOODLE_INTERNAL') || die();
 
 class check_exam_closure extends \core\task\scheduled_task {
 
     public function get_name() {
-        return get_string('check_exam_closure_task', 'local_secureaccess');
+        return get_string('check_exam_closure_task', 'local_restrict');
     }
 
     public function execute() {
@@ -49,7 +49,7 @@ class check_exam_closure extends \core\task\scheduled_task {
             $record = new stdClass();
             $record->examid = $quiz->id;
             $record->status = 0;
-            $DB->update_record('local_secureaccess_user_exam', $record);
+            $DB->update_record('local_restrict_user_exam', $record);
         }
     }
 }

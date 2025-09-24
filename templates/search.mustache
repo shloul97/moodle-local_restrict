@@ -14,13 +14,13 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 }}
 {{!
-    @template local/secureaccess
+    @template local/restrict
 
     This template renders summary information about a single quiz attempt.
 
@@ -33,10 +33,10 @@
 <div class="container">
     <div class="plugin-content">
         {{!
-            @template local_secureaccess/header
+            @template local_restrict/header
         }}
         {{#header}}
-            {{> local_secureaccess/header }}
+            {{> local_restrict/header }}
         {{/header}}
 
 
@@ -45,22 +45,27 @@
         <div class="about">
             <span id="logs-area"></span>
             {{!
-                @template local_secureaccess/forms
+                @template local_restrict/forms
             }}
 
 
 
             {{!
-                @template local_secureaccess/courses_table
+                @template local_restrict/courses_table
             }}
 
                 <div class="row">
                     <div class="col-12">
                         <div class="container labs-container mt-3">
                             <div class="table-content">
+                                <div class="title mt-3">
+                                    <span id="ajx-err" class="text-danger">
+
+                                    </span>
+                                </div>
                                 <input type="hidden" id="sesskey" value="{{sesskey}}">
                                 {{#table}}
-                                    {{> local_secureaccess/courses_table}}
+                                    {{> local_restrict/courses_table}}
                                 {{/table}}
                             </div>
                         </div>

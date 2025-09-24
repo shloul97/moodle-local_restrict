@@ -15,14 +15,14 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/local/secureaccess/classes/form/insert_groups_form.php');
+require_once($CFG->dirroot . '/local/restrict/classes/form/insert_groups_form.php');
 
 
 require_login();
@@ -44,16 +44,20 @@ global $OUTPUT, $PAGE, $CFG;
 
 $mform = new insert_groups();
 
-$PAGE->set_url(new moodle_url("/local/secureaccess/insert_groups.php"));
+$PAGE->set_url(new moodle_url("/local/restrict/insert_groups.php"));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title("Add Users");
 
-
+// JQuery
 $PAGE->requires->jquery_plugin('ui');
-$PAGE->requires->js_call_amd('local_secureaccess/selector', 'init');
-$PAGE->requires->js_call_amd('local_secureaccess/distrpute', 'init');
-//$PAGE->requires->js('/local/secureaccess/amd/src/distrpute2.js');
+
+// Call JS to view courses selector and enable search
+$PAGE->requires->js_call_amd('local_restrict/selector', 'init');
+
+// disprute js file
+$PAGE->requires->js_call_amd('local_restrict/distrpute', 'init');
+
 
 
 
@@ -65,14 +69,8 @@ if ($mform->is_cancelled()) {
 }
 else if ($fromform = $mform->get_data()) {
 
-    echo '<br><br><br><br>';
-    echo '<br><br><br><br>';
-    echo '<br><br><br><br>';
 
-
-    var_dump($fromform);
-
-    $labIps = $DB->get_records_select('local_secureaccess_devices','labid = ?',[1]);
+    $lab_ips = $DB->get_records_select('local_restrict_devices','labid = ?',[1]);
 
     $record = new stdClass();
     $record->course = $fromform->course;
@@ -114,12 +112,12 @@ $templatecontext = [
 
 
 $header = [
-    "insertGroup" => new moodle_url("/local/secureaccess/insert_groups.php"),
-    "insertLabs"=> new moodle_url("/local/secureaccess/insert_labs.php"),
-    "insertIp"=> new moodle_url("/local/secureaccess/insert_ranges.php"),
-    "updateLabs"=> new moodle_url("/local/secureaccess/update_labs.php"),
-    "inquiry"=> new moodle_url("/local/secureaccess/inquiry.php"),
-    "home"=> new moodle_url("/local/secureaccess/index.php")
+    "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
+    "insertLabs"=> new moodle_url("/local/restrict/insert_labs.php"),
+    "insertIp"=> new moodle_url("/local/restrict/insert_ranges.php"),
+    "updateLabs"=> new moodle_url("/local/restrict/update_labs.php"),
+    "inquiry"=> new moodle_url("/local/restrict/inquiry.php"),
+    "home"=> new moodle_url("/local/restrict/index.php")
 ];
 
 
@@ -128,17 +126,15 @@ $context = [
     'form' => [$templatecontext]
 ];
 
-//$PAGE->requires->js_call_amd('local_secureaccess/selector', 'init');
-//$PAGE->requires->js('/local/secureaccess/amd/src/selector.js');
 echo $OUTPUT->header();
 
 
 
 
-echo  $OUTPUT->notification('Course should be has a group and every group has an exam', \core\output\notification::NOTIFY_WARNING, false);
+echo  $OUTPUT->notification(get_string('hint_notification', 'local_restrict'), \core\output\notification::NOTIFY_WARNING, false);
 
 
-echo $OUTPUT->render_from_template('local_secureaccess/container',$context);
+echo $OUTPUT->render_from_template('local_restrict/container',$context);
 
 
 

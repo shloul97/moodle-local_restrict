@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,9 +36,9 @@ class inquiry extends moodleform {
 
 
         $records = $DB->get_records_sql('SELECT  c.id,c.idnumber, c.fullname
-            FROM mdl_local_secureaccess_user_exam ue
-            JOIN mdl_local_secureaccess_devices d ON ue.privateip = d.id
-            JOIN mdl_local_secureaccess_labs l ON d.labid = l.id
+            FROM mdl_local_restrict_user_exam ue
+            JOIN mdl_local_restrict_devices d ON ue.privateip = d.id
+            JOIN mdl_local_restrict_labs l ON d.labid = l.id
             JOIN mdl_quiz q on ue.examid = q.id
             JOIN mdl_course c on q.course = c.id
             JOIN mdl_groups g on g.id = ue.groupid
@@ -54,14 +54,14 @@ class inquiry extends moodleform {
         }
 
 
-        $mform->addElement('select','courseid',get_string('courses', 'local_secureaccess'),$options);
+        $mform->addElement('select','courseid',get_string('courses', 'local_restrict'),$options);
         $mform->setType('courseid', paramtype: PARAM_TEXT);
 
 
 
 
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('filter', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('filter', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 

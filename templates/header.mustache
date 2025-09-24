@@ -14,13 +14,13 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 }}
 {{!
-    @template local/secureaccess
+    @template local/restrict
 
     This template renders summary information about a single quiz attempt.
 
@@ -28,12 +28,12 @@
     {
 
         $header = [
-            "insertGroup" => new moodle_url("/local/secureaccess/insert_groups.php"),
-            "insertLabs"=> new moodle_url("/local/secureaccess/insert_labs.php"),
-            "insertIp"=> new moodle_url("/local/secureaccess/insert_ranges.php"),
-            "updateLabs"=> new moodle_url("/local/secureaccess/update_labs.php"),
-            "inquiry"=> new moodle_url("/local/secureaccess/inquiry.php"),
-            "home"=> new moodle_url("/local/secureaccess/index.php")
+            "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
+            "insertLabs"=> new moodle_url("/local/restrict/insert_labs.php"),
+            "insertIp"=> new moodle_url("/local/restrict/insert_ranges.php"),
+            "updateLabs"=> new moodle_url("/local/restrict/update_labs.php"),
+            "inquiry"=> new moodle_url("/local/restrict/inquiry.php"),
+            "home"=> new moodle_url("/local/restrict/index.php")
         ];
     }
 }}
@@ -46,21 +46,21 @@
         <a class="btn btn-light w-100 plugin-link" href="{{{home}}}">Home</a>
     </div>
     <div class="menu-link flex-grow-1 p-1">
-        <a class="btn btn-light w-100 plugin-link" href="{{{insertLabs}}}">Insert Labs</a>
+        <a class="btn btn-light w-100 plugin-link" href="{{{insertLabs}}}">{{#str}} insertlabs_header, local_restrict {{/str}}</a>
     </div>
     <div class="menu-link flex-grow-1 p-1">
-        <a class="btn btn-light w-100 plugin-link" href="{{{insertIp}}}">Insert IPs</a>
+        <a class="btn btn-light w-100 plugin-link" href="{{{insertIp}}}">{{#str}} insertips_header, local_restrict {{/str}}</a>
     </div>
     <div class="menu-link flex-grow-1 p-1">
-        <a class="btn btn-light w-100 plugin-link" href="{{{insertGroup}}}">Insert Groups (Distrpute)</a>
+        <a class="btn btn-light w-100 plugin-link" href="{{{insertGroup}}}">{{#str}} insertgroups_header, local_restrict {{/str}}</a>
     </div>
 
      <div class="menu-link flex-grow-1 p-1">
-        <a class="btn btn-light w-100 plugin-link" href="{{{updateLabs}}}">Update Labs</a>
+        <a class="btn btn-light w-100 plugin-link" href="{{{updateLabs}}}">{{#str}} updatelabs_header, local_restrict {{/str}}</a>
     </div>
 
     <div class="menu-link flex-grow-1 p-1">
-        <a class="btn btn-light w-100 plugin-link" href="{{{inquiry}}}">Search</a>
+        <a class="btn btn-light w-100 plugin-link" href="{{{inquiry}}}">{{#str}} search, local_restrict {{/str}}</a>
     </div>
 </div>
 

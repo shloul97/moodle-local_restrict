@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,16 +34,16 @@ class insert_labs extends moodleform {
         $mform = $this->_form;
 
 
-        $mform->addElement('text','labname',get_string('labname', 'local_secureaccess'));
+        $mform->addElement('text','labname',get_string('labname', 'local_restrict'));
         $mform->settype('text', PARAM_NOTAGS);
         $mform->addRule('labname', get_string('required'), 'required', null, 'client');
 
-        $mform->addElement('text','capacity',get_string('capacity', 'local_secureaccess'));
+        $mform->addElement('text','capacity',get_string('capacity', 'local_restrict'));
         $mform->settype('text', PARAM_NOTAGS);
 
 
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 

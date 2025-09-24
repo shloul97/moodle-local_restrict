@@ -15,14 +15,14 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
 require_once('../../config.php');
-require_once($CFG->dirroot . '/local/secureaccess/classes/form/insert_labs_form.php');
+require_once($CFG->dirroot . '/local/restrict/classes/form/insert_labs_form.php');
 
 
 
@@ -45,7 +45,7 @@ global $OUTPUT, $PAGE, $CFG;
 
 $mform = new insert_labs();
 
-$PAGE->set_url(new moodle_url("/local/secureaccess/add_labs.php"));
+$PAGE->set_url(new moodle_url("/local/restrict/add_labs.php"));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title("Lab Insertion");
@@ -76,17 +76,17 @@ else if ($fromform = $mform->get_data()) {
 
     try
     {
-        $id = $DB->insert_record('local_secureaccess_labs', $record);
+        $id = $DB->insert_record('local_restrict_labs', $record);
         if($id)
         {
-            \core\notification::success(get_string('lab_insertion', 'local_secureaccess')." $id");
+            \core\notification::success(get_string('lab_insertion', 'local_restrict')." $id");
         }
 
 
     }
     catch(Exception $e)
     {
-        \core\notification::error(get_string('failed_lab_insertion', 'local_secureaccess'));
+        \core\notification::error(get_string('failed_lab_insertion', 'local_restrict'));
     }
 
 
@@ -94,25 +94,25 @@ else if ($fromform = $mform->get_data()) {
 
 
 
-$templatecontextAuto = [
+$template_ctx_auto = [
     'submitted' => false,
     'formhtml' => $mform->render()
 ];
 
 
 $header = [
-    "insertGroup" => new moodle_url("/local/secureaccess/insert_groups.php"),
-    "insertLabs"=> new moodle_url("/local/secureaccess/insert_labs.php"),
-    "insertIp"=> new moodle_url("/local/secureaccess/insert_ranges.php"),
-    "updateLabs"=> new moodle_url("/local/secureaccess/update_labs.php"),
-    "inquiry"=> new moodle_url("/local/secureaccess/inquiry.php"),
-    "home"=> new moodle_url("/local/secureaccess/index.php")
+    "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
+    "insertLabs"=> new moodle_url("/local/restrict/insert_labs.php"),
+    "insertIp"=> new moodle_url("/local/restrict/insert_ranges.php"),
+    "updateLabs"=> new moodle_url("/local/restrict/update_labs.php"),
+    "inquiry"=> new moodle_url("/local/restrict/inquiry.php"),
+    "home"=> new moodle_url("/local/restrict/index.php")
 ];
 
 
 
 $context = [
-    'form' => [$templatecontextAuto],
+    'form' => [$template_ctx_auto],
     'header' => $header
 ];
 
@@ -122,7 +122,7 @@ echo $OUTPUT->header();
 
 
 
-echo $OUTPUT->render_from_template('local_secureaccess/container',$context);
+echo $OUTPUT->render_from_template('local_restrict/container',$context);
 
 
 

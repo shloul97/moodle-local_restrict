@@ -10,23 +10,33 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
 
                 var data = $(this).serializeArray();
                 var labs = [];
+                var quizes = [];
+
+                //labs and course debugging
+                let course_debug = data.find(x => x.name === "course")?.value;
+                let labs_debug = data.filter(x => x.name === "labs[]").map(x => x.value);
+
+                if(!course_debug.length|| labs_debug.length <= 0){
+                    alert("Please Select Course and Labs");
+                    return;
+                }
 
                 $(this).find('input[name="labs[]"]:checked').each(function () {
                     labs.push($(this).val());
                 });
 
-                if (data.length <= 3) {
-                    alert("Please Select Course and Labs");
-                    return;
-                }
+                $(this).find('input[name="quizes[]"]:checked').each(function () {
+                    quizes.push($(this).val());
+                });
 
                 var usersArgs = {
                     courseid: parseInt(data[2].value),
-                    labs: labs
+                    labs: labs,
+                    quiz: quizes
                 };
 
                 Ajax.call([{
-                    methodname: 'local_secureaccess_get_users',
+                    methodname: 'local_restrict_get_users',
                     args: usersArgs
                 }])[0].then(function (res) {
                     var msgDiv = $('.msg-div');
@@ -37,6 +47,7 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
                     } else {
                         msgDiv.html(res.message).addClass('msg-success').fadeIn(200);
                     }
+
                 }).catch(function (err) {
                     let fullError = `
                                     <div style="color:red;">
@@ -57,12 +68,12 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
             $('input[name=course]').change(function () {
                 var val = parseInt($(this).val());
 
-                // Quizes
+                // Get Quizes
                 var quizesArgs = {
                     courseid: val
                 };
                 Ajax.call([{
-                    methodname: 'local_secureaccess_get_quizes',
+                    methodname: 'local_restrict_get_quizes',
                     args: quizesArgs
                 }])[0].then(function (res) {
                     let html = '';
@@ -91,8 +102,6 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
                     $('#ajx-err').html(fullError);
                 });
             });
-
-
         }
     };
 });

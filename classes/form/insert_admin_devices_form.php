@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,12 +33,12 @@ class insert_ranges_admin extends moodleform {
 
         $mform = $this->_form;
 
-        $mform->addElement('header', 'adminHeader', get_string('admin_header', 'local_secureaccess'));
+        $mform->addElement('header', 'adminHeader', get_string('admin_header', 'local_restrict'));
         $mform->setExpanded('adminHeader', false,); //
 
 
 
-        $records = $DB->get_records('local_secureaccess_labs');
+        $records = $DB->get_records('local_restrict_labs');
 
 
 
@@ -50,17 +50,17 @@ class insert_ranges_admin extends moodleform {
         }
 
 
-        $mform->addElement('select','labid',get_string('labname', 'local_secureaccess'),$options);
+        $mform->addElement('select','labid',get_string('labname', 'local_restrict'),$options);
         $mform->setType('labid', PARAM_TEXT);
         $mform->addRule('labid', get_string('required'), 'required', null, 'client');
 
 
-        $mform->addElement('textarea', 'admin_ips', get_string('admin_ips', 'local_secureaccess'), ['placeholder' => get_string('admin_ips_place', 'local_secureaccess'),'rows="10" cols="10"']);
+        $mform->addElement('textarea', 'admin_ips', get_string('admin_ips', 'local_restrict'), ['placeholder' => get_string('admin_ips_place', 'local_restrict'),'rows="10" cols="10"']);
         $mform->addRule('admin_ips', get_string('required'), 'required', null, 'client');
 
 
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 

@@ -1,9 +1,30 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Secure Exam Access plugin for Moodle
+// Copyright (C) 2025 Moayad Shloul
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ *
+ * @package   local_restrict
+ * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/externallib.php');
 
-class local_secureaccess_external extends external_api
+class local_restrict_external extends external_api
 {
 
     //------ Contructer -----------
@@ -26,6 +47,19 @@ class local_secureaccess_external extends external_api
     // ---------------------- PARAMETERS -------------------------
 
 
+
+    // --------------------- STOP PROCESS PARAMETERS --------------
+    public static function stop_process_parameters()
+    {
+        return new external_function_parameters([
+            'error' => new external_multiple_structure(
+                new external_value(PARAM_INT, 'Lab IDs'),
+                new external_value(PARAM_TEXT, 'Descripe')
+            ),
+        ]);
+    }
+
+
     // ---------------- PARAMETERS For Distrpution ----------------
     public static function get_users_parameters()
     {
@@ -34,10 +68,16 @@ class local_secureaccess_external extends external_api
             'labs' => new external_multiple_structure(
                 new external_value(PARAM_INT, 'Lab IDs')
             ),
+            'quiz' => new external_multiple_structure(
+                new external_value(PARAM_INT, 'Quiz IDs'),
+                'List of quiz IDs',
+                VALUE_DEFAULT,
+                []
+            )
         ]);
     }
 
-    // ---------------- PARAMETERS For Distrpution ----------------
+    // ---------------- PARAMETERS For Update Labs ----------------
     public static function update_labs_parameters()
     {
         return new external_function_parameters([
@@ -48,10 +88,29 @@ class local_secureaccess_external extends external_api
         ]);
     }
 
+    // ---------------- PARAMETERS For Quizes ----------------
     public static function get_quizes_parameters()
     {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT, 'Device ID')
+            'courseid' => new external_value(PARAM_INT, 'Course ID')
+        ]);
+    }
+
+    // ---------------- PARAMETERS For Quizes ----------------
+    public static function get_groups_parameters()
+    {
+        return new external_function_parameters([
+            'courseid' => new external_value(PARAM_INT, 'Course ID')
+        ]);
+    }
+
+    // ---------------- PARAMETERS For Courses Records ----------------
+    public static function courses_records_parameters()
+    {
+        return new external_function_parameters([
+            'courseid' => new external_value(PARAM_INT, 'Course Id'),
+            'action' => new external_value(PARAM_TEXT, 'Action')
+
         ]);
     }
 
@@ -61,63 +120,61 @@ class local_secureaccess_external extends external_api
 
 
 
+    //Stop To avoids DDL
+    public static function stop_process($err)
+    {
+        $params = self::validate_parameters(self::stop_process_parameters(), [
+            'error' => $err
+        ]);
+        $returns_value = $params['error'];
+        return $returns_value;
+    }
     // ---------------- User Distrpute Function ----------------
-    public static function get_users($courseid, $labs)
+    public static function get_users($courseid, $labs = [], $out_quiz = [], $groups = [])
     {
         global $DB;
 
-        $distrputed = false;
-        $err = '';
+
+
+
+
 
         $params = self::validate_parameters(self::get_users_parameters(), [
             'courseid' => $courseid,
             'labs' => $labs,
+            'quiz' => $out_quiz,
+
         ]);
 
         $labs = $params['labs'];
         $courseId = $params['courseid'];
 
 
-
-
-        function stop_process()
-        {
-            exit;
+        //Check if user post quizes IDs (Optional)
+        if (!empty($params['quiz'])) {
+            foreach ($params['quiz'] as $quiz) {
+                $quizes[] = (object) ['id' => $quiz];
+            }
+        } else {
+            $quizes = self::get_course_quizes($courseId);
         }
 
 
-        $ipsArr = array();
+
+        $ips_array = array();
         $users = array();
-        $countDevices = 0;
+        $count_devices = 0;
 
-
-
-
-
-        $quiz = null;
-
-
-
-        $quizes = self::get_course_quizes($courseId);
         $i = 0;
         foreach ($quizes as $quiz) {
-
             $users[$i] = self::get_user_enrolled($courseId, $quiz->id);
             $i++;
-
-        }
-
-
-        if ($quiz != null) {
-
-        } else {
-            $users[0] = self::get_user_enrolled($courseId, $quiz);
         }
 
 
 
         list($in_sql, $in_params) = $DB->get_in_or_equal($labs, SQL_PARAMS_QM, 'param', true);
-        $sql_labs = 'SELECT id from {local_secureaccess_devices}
+        $sql_labs = 'SELECT id from {local_restrict_devices}
 WHERE status = 1 AND labid ' . $in_sql;
 
 
@@ -126,42 +183,42 @@ WHERE status = 1 AND labid ' . $in_sql;
 
         /* -------------- CHECK IF Lab has an exam in the same time -------------------- */
         $sql_check_time = "SELECT DISTINCT q.*
-FROM {local_secureaccess_user_exam} ue
+FROM {local_restrict_user_exam} ue
 JOIN {quiz} q ON ue.examid = q.id
-JOIN {local_secureaccess_devices} d ON ue.privateip = d.id
-JOIN {local_secureaccess_labs} l ON d.labid = l.id
+JOIN {local_restrict_devices} d ON ue.privateip = d.id
+JOIN {local_restrict_labs} l ON d.labid = l.id
 WHERE l.id $in_sql
   AND q.timeopen > UNIX_TIMESTAMP() - 43200";
 
 
 
-        $checkLabTime = $DB->get_records_sql($sql_check_time, $in_params);
+        $check_lab_time = $DB->get_records_sql($sql_check_time, $in_params);
 
-        $quizTimeDevices = [];
+        $quiz_time_devices = [];
 
 
 
-        if (!empty($checkLabTime)) {
+        if (!empty($check_lab_time)) {
 
-            foreach ($checkLabTime as $lab) {
+            foreach ($check_lab_time as $lab) {
 
 
                 foreach ($quizes as $quiz) {
                     // Get quiz data by ID (should return one record)
-                    $quizData = $DB->get_record('quiz', ['id' => $quiz->id]);
+                    $quiz_data = $DB->get_record('quiz', ['id' => $quiz->id]);
 
 
-                    if (!$quizData) {
+                    if (!$quiz_data) {
                         continue; // Skip if quiz not found
                     }
 
                     // Check if quiz open time falls within the lab's time range
-                    if ($quizData->timeopen >= $lab->timeopen && $quizData->timeopen < $lab->timeclose) {
+                    if ($quiz_data->timeopen >= $lab->timeopen && $quiz_data->timeopen < $lab->timeclose) {
 
 
-                        // Get related devices for this quiz from local_secureaccess_user_exam
-                        $quizTimeDevices = $DB->get_records_sql(
-                            "SELECT privateip FROM {local_secureaccess_user_exam} WHERE examid = ?",
+                        // Get related devices for this quiz from local_restrict_user_exam
+                        $quiz_time_devices = $DB->get_records_sql(
+                            "SELECT privateip FROM {local_restrict_user_exam} WHERE examid = ?",
                             [$lab->id]
                         );
 
@@ -180,64 +237,64 @@ WHERE l.id $in_sql
 
 
 
-        $ipsArr = $DB->get_records_sql($sql_labs, $in_params);
+        $ips_array = $DB->get_records_sql($sql_labs, $in_params);
 
-        $sql_admin_devices = "SELECT device_id from {local_secureaccess_admin_devices}";
+        $sql_admin_devices = "SELECT device_id from {local_restrict_admin_devices}";
 
-        $adminIpArr = $DB->get_records_sql($sql_admin_devices);
+        $admin_ip_array = $DB->get_records_sql($sql_admin_devices);
 
 
         // 2. Extract admin device IDs into a simple array
-        $adminIds = array_map(function ($item): mixed {
+        $admin_ids = array_map(function ($item): mixed {
             return $item->device_id;
-        }, $adminIpArr);
+        }, $admin_ip_array);
 
 
 
 
-        // 3. Filter $ipsArr to remove devices that are in Admin devices
-        $filteredIpsArr = array_filter($ipsArr, function ($item) use ($adminIds) {
-            return !in_array($item->id, haystack: $adminIds);
+        // 3. Filter $ips_array to remove devices that are in Admin devices
+        $filtered_ips_arr = array_filter($ips_array, function ($item) use ($admin_ids) {
+            return !in_array($item->id, haystack: $admin_ids);
         });
 
 
 
-        if (!empty($quizTimeDevices)) {
-            // 4. Filter $ipsArr to remove devices that are in same time of else exam
-            $quizDeviceIps = array_map(function ($d) {
+        if (!empty($quiz_time_devices)) {
+            // 4. Filter $ips_array to remove devices that are in same time of else exam
+            $quiz_device_ips = array_map(function ($d) {
                 return $d->privateip;
-            }, $quizTimeDevices);
+            }, $quiz_time_devices);
 
 
 
-            $lastFilteredIps = array_filter($filteredIpsArr, function ($item) use ($quizDeviceIps) {
-                return !in_array($item->id, $quizDeviceIps);
+            $last_filtered_ips = array_filter($filtered_ips_arr, callback: function ($item) use ($quiz_device_ips) {
+                return !in_array($item->id, $quiz_device_ips);
             });
 
 
-            $filteredIpsArr = array_values($lastFilteredIps);
+            $filtered_ips_arr = array_values($last_filtered_ips);
 
 
         }
-        // 5. convert $ipsArr to array values to prepare to shuffle
-        $filteredIpsArr = array_values($filteredIpsArr);
+        // 5. convert $ips_array to array values to prepare to shuffle
+        $filtered_ips_arr = array_values($filtered_ips_arr);
 
 
 
 
 
 
-        // Now $filteredIpsArr contains devices NOT in admin list
-        $countDevices = count($filteredIpsArr);
+        // Now $filtered_ips_arr contains devices NOT in admin list
+        $count_devices = count($filtered_ips_arr);
 
 
 
-        $countUsers = 0;
+        $count_users = 0;
         $max = 0;
         foreach ($users as $group) {
-            $countUsers = count($group);
-            if ($max < $countUsers) {
-                $max = $countUsers;
+            $count_users = count($group);
+            if ($max < $count_users) {
+                $max = $count_users;
 
             }
         }
@@ -246,31 +303,30 @@ WHERE l.id $in_sql
 
 
         //GET max quiz number --
-        if ($countDevices < $max) {
-            return ['status' => 0, 'message' => get_string('distrputed_err', 'local_secureaccess') . $countDevices . "\n Users: " . $max];
-            self::stop_process();
+        if ($count_devices < $max) {
+            return ['status' => 0, 'message' => get_string('distrputed_err', 'local_restrict') . $count_devices . "\n Users: " . $max];
         } else {
 
             // Preapre Distrputed -------
             for ($x = 0; $x < count($quizes); $x++) {
 
-                $countUserInQuiz = count($users[$x]);
-                $flawless = $countUserInQuiz - 1;
+                $count_user_in_quiz = count($users[$x]);
+                $flawless = $count_user_in_quiz - 1;
                 $flat_users = array_values($users[$x]);
 
                 // Shuffle IPs for random assignment
-                $availableIps = array_values($filteredIpsArr); // make a copy
-                shuffle($availableIps);
+                $available_ips = array_values($filtered_ips_arr); // make a copy
+                shuffle($available_ips);
 
 
 
 
                 //Start users Insetion
-                foreach ($availableIps as $index => $ip) {
+                foreach ($available_ips as $index => $ip) {
                     if ($flawless < 0) {
                         break;
                     }
-                    //$ip = array_shift($availableIps);
+                    //$ip = array_shift($available_ips);
 
                     $record = new stdClass();
                     $record->userid = $flat_users[$flawless]->user_id;
@@ -288,10 +344,10 @@ WHERE l.id $in_sql
                     try {
 
                         // Inserted Records
-                        $DB->insert_record('local_secureaccess_user_exam', $record, false);
+                        $DB->insert_record('local_restrict_user_exam', $record, false);
 
                         // Remove used IP so it's not reused
-                        unset($availableIps[$index]);
+                        unset($available_ips[$index]);
 
 
                     } catch (Exception $e) {
@@ -299,14 +355,12 @@ WHERE l.id $in_sql
 
                         $err = $e->getTraceAsString();
 
-                        return ['status' => 0, 'message' => 'error : ' . $e->getTraceAsString()];
-
                     }
                     $flawless--;
                 }
             }
 
-            return ['status' => 1, 'message' => get_string('distrputed_sucess', 'local_secureaccess')];
+            return ['status' => 1, 'message' => get_string('distrputed_sucess', 'local_restrict')];
 
 
 
@@ -314,6 +368,7 @@ WHERE l.id $in_sql
 
     }
 
+    //Get all quizes in selected course
     public static function get_course_quizes($courseId)
     {
 
@@ -334,17 +389,20 @@ WHERE l.id $in_sql
     {
 
         global $DB;
-        $moduleQuiz = $DB->get_field('modules', 'id', ['name' => 'quiz']);
+        $module_quiz = $DB->get_field('modules', 'id', ['name' => 'quiz']);
 
-        $groups = $DB->get_field('course_modules', 'availability', [
+         $groups = $DB->get_field('course_modules', 'availability', [
             'course' => (int) $courseid,
-            'module' => (int) $moduleQuiz,
+            'module' => (int) $module_quiz,
             'instance' => (int) $quizId
         ]);
 
 
+
         $groupids = [];
 
+
+        // Get groupid in quiz groups restriction
         if ($groups) {
             $group = json_decode($groups);
 
@@ -355,13 +413,17 @@ WHERE l.id $in_sql
                     }
                 }
             }
+
         }
 
 
 
 
-        if ($groupids) {
 
+
+
+        if ($groupids) {
+            // Get all user has a quiz in course selected by group id
             list($in_sql, $in_params) = $DB->get_in_or_equal($groupids, SQL_PARAMS_QM, 'param', true);
 
             $sql = 'SELECT
@@ -387,6 +449,8 @@ WHERE l.id $in_sql
         } else {
 
             // ----------- NO RESTRICTION ------------------
+
+            // Get all user has a quiz in course selected
             $users = $DB->get_records_sql('SELECT distinct
             u.id AS user_id,
             q.id AS quiz_id,
@@ -448,7 +512,7 @@ WHERE l.id $in_sql
             $record->status = 0;
 
             try {
-                $DB->update_record('local_secureaccess_devices', $record);
+                $DB->update_record('local_restrict_devices', $record);
                 return [
                     'status' => 1,
                     'message' => 'Success'
@@ -469,7 +533,7 @@ WHERE l.id $in_sql
             $record->status = 1;
 
             try {
-                $DB->update_record('local_secureaccess_devices', $record);
+                $DB->update_record('local_restrict_devices', $record);
                 return [
                     'status' => 1,
                     'message' => 'Success'
@@ -482,13 +546,14 @@ WHERE l.id $in_sql
             }
         }
 
+        // Delete device from DB
         if ($action == 'del') {
 
             $record = new stdClass();
             $record->id = $deviceid;
 
             try {
-                $DB->delete_records('local_secureaccess_devices', array('id' => $record->id));
+                $DB->delete_records('local_restrict_devices', array('id' => $record->id));
                 return [
                     'status' => 1,
                     'message' => 'Success'
@@ -501,18 +566,21 @@ WHERE l.id $in_sql
             }
         }
 
+
+        // Device add or remove from admin table
         if ($action == 'admin') {
 
+            // Remove admin device
             if ($dataaction == "rmadmin") {
                 $record = new stdClass();
                 $record->labid = $lab;
                 $record->device_id = $deviceid;
                 try {
                     $DB->delete_records(
-                        'local_secureaccess_admin_devices',
+                        'local_restrict_admin_devices',
                         ['labid' => $lab, 'device_id' => $deviceid]
                     );
-                    return ['status' => 1, 'message' => get_string('record_success', 'local_secureaccess')];
+                    return ['status' => 1, 'message' => get_string('record_success', 'local_restrict')];
                 } catch (dml_write_exception $e) {
                     return [
                         'status' => 0,
@@ -520,7 +588,9 @@ WHERE l.id $in_sql
                     ];
                 }
 
-            } else {
+            }
+            // Add admin device
+            else {
 
                 $records = new stdClass();
                 $records->labid = $lab;
@@ -528,10 +598,10 @@ WHERE l.id $in_sql
 
                 try {
 
-                    $DB->insert_record('local_secureaccess_admin_devices', $records, false);
+                    $DB->insert_record('local_restrict_admin_devices', $records, false);
                     return [
                         'status' => 1,
-                        'message' => get_string('record_success', 'local_secureaccess'),
+                        'message' => get_string('record_success', 'local_restrict'),
                     ];
                 } catch (dml_write_exception $e) {
                     error_log('Record: ' . var_export($records, true));
@@ -589,18 +659,68 @@ WHERE l.id $in_sql
         }
 
     }
-    //---------- END Quizes To Display --------------------
+
+
+    //---------- Groups To Display --------------------
+
+    public static function get_groups($courseid)
+    {
+
+        $params = self::validate_parameters(self::get_groups_parameters(), [
+            'courseid' => $courseid,
+        ]);
+
+        $courseid = $params['courseid'];
+
+        global $DB;
+
+        $groups_arr = array();
+
+        $groups = $DB->get_records_sql('SELECT * FROM {groups}
+        WHERE courseid = ?', [$courseid]);
+
+        foreach ($groups as $group) {
+            $groups_arr[] = [
+                'id' => $group->id,
+                'name' => $group->name
+            ];
+        }
+
+        $groups_list = array_values($groups);
+        if (!empty($groups_list)) {
+            return ['status' => 1, 'message' => $groups_arr];
+        } else {
+            $groups_list[] = [
+                'id' => 0,
+                'name' => 'No Quizes'
+            ];
+            return ['status' => 0, 'message' => $groups_arr];
+        }
+
+    }
+    //---------- END Groups To Display --------------------
 
     //---------- Delete Courses Records --------------------
-    public static function courses_records()
+    public static function courses_records($courseid, $action)
     {
+
+
+        // Delete all course exams records to re-distrpute for technical error,
+        // Or no need this data any more.
 
 
         global $DB;
 
-        $courseId = required_param('courseId', PARAM_INT);
 
-        $action = required_param('action', PARAM_TEXT);
+        $params = self::validate_parameters(self::courses_records_parameters(), [
+            'courseid' => $courseid,
+            'action' => $action
+        ]);
+
+
+        $courseId = $params['courseid'];
+
+        $action = $params['action'];
 
         $record = new stdClass();
         $record->id = $courseId;
@@ -611,23 +731,34 @@ WHERE l.id $in_sql
 
         if ($action == 'del') {
 
-            $rows = $DB->get_records_sql('SELECT ue.examid
-        FROM mdl_local_secureaccess_user_exam ue
-        JOIN mdl_local_secureaccess_devices d ON ue.privateip = d.id
-        JOIN mdl_local_secureaccess_labs l ON d.labid = l.id
-        JOIN mdl_quiz q on ue.examid = q.id
-        JOIN mdl_course c on q.course = c.id AND c.id = ?
-        JOIN mdl_groups g on g.id = ue.groupid
-        JOIN mdl_user u where u.id = ue.userid AND u.username > 20000
-        group by ue.examid');
+            $sql = "SELECT ue.examid
+        FROM {local_restrict_user_exam} ue
+        JOIN {local_restrict_devices} d ON ue.privateip = d.id
+        JOIN {local_restrict_labs} l ON d.labid = l.id
+        JOIN {quiz} q on ue.examid = q.id
+        JOIN {course} c on q.course = c.id AND c.id = ?
+        JOIN {groups} g on g.id = ue.groupid
+        JOIN {user} u
+        where u.id = ue.userid AND u.username > 20000
+        GROUP BY ue.examid";
 
-            return json_encode(['data' => $rows]);
-            foreach ($rows as $id) {
+            $sql_param = [$courseid];
 
-                $DB->delete_records('local_secureaccess_user_exam', ['examid' => (int) $id->examid]);
+            $rows = $DB->get_records_sql($sql, $sql_param);
+
+            foreach ($rows as $row) {
+                try {
+                    $DB->delete_records('local_restrict_user_exam', ['examid' => (int) $row->examid]);
+                } catch (dml_write_exception $e) {
+
+                    return [
+                        'status' => 0,
+                        'message' => 'Database write error: ' . $row->examid
+                    ];
+                }
             }
 
-            return json_encode(array('status' => 1, 'message' => 'Success', 'data' => 'dataTest_courses_records'));
+            return ['status' => 1, 'message' => 'Success'];
         }
     }
 
@@ -655,25 +786,59 @@ WHERE l.id $in_sql
             'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
             'message' => new external_value(PARAM_TEXT, 'Result message'),
             'results' => new external_multiple_structure(
-                    new external_value(PARAM_RAW, 'Details of distribution'),
-                    'Optional result details',
-                    VALUE_OPTIONAL
-                )
+                new external_value(PARAM_RAW, 'Details of distribution'),
+                'Optional result details',
+                VALUE_OPTIONAL
+            )
         ]);
     }
 
-    //--------------------- Get Users Returns -------------------
+    //--------------------- Get Quizes Returns -------------------
     public static function get_quizes_returns()
     {
         return new external_single_structure([
             'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
             'message' => new external_multiple_structure(
-                    new external_single_structure([
-                        'id' => new external_value(PARAM_INT, 'Quiz ID'),
-                        'name' => new external_value(PARAM_TEXT, 'Quiz name'),
+                new external_single_structure([
+                    'id' => new external_value(PARAM_INT, 'Quiz ID'),
+                    'name' => new external_value(PARAM_TEXT, 'Quiz name'),
 
-                    ])
-                )
+                ])
+            )
+        ]);
+    }
+
+    //--------------------- Get Groups Returns -------------------
+    public static function get_groups_returns()
+    {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+            'message' => new external_multiple_structure(
+                new external_single_structure([
+                    'id' => new external_value(PARAM_INT, 'Quiz ID'),
+                    'name' => new external_value(PARAM_TEXT, 'Quiz name'),
+
+                ])
+            )
+        ]);
+    }
+
+
+    //------------ Course Records Rerturns --------------
+    public static function courses_records_returns()
+    {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+            'message' => new external_value(PARAM_TEXT, 'Message describing the result'),
+        ]);
+    }
+
+    //------------ STOP PROCESS RETURNS -----------------
+    public static function stop_process_returns()
+    {
+        return new external_single_structure([
+            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+            'message' => new external_multiple_structure(PARAM_TEXT, 'Descripe data')
         ]);
     }
 

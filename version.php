@@ -15,7 +15,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -24,6 +24,6 @@
 
  $plugin->version = 2025060427;
  $plugin->requires = 2023042400; // Moodle 4.2.
- $plugin->component = 'local_secureaccess';
+ $plugin->component = 'local_restrict';
  $plugin->maturity = MATURITY_BETA;
- $plugin->release = '41.3-lemmings-1.0';
+ $plugin->release = '4.1.3-lemmings-1.0';

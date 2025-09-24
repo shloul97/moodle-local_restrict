@@ -14,7 +14,7 @@
 
 /**
  *
- * @package   local_secureaccess
+ * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,11 +33,11 @@ class insert_ranges_manual extends moodleform {
 
         $mform = $this->_form;
 
-        $mform->addElement('header', 'manualHeader', get_string('manual_insertion_header', 'local_secureaccess'));
+        $mform->addElement('header', 'manualHeader', get_string('manual_insertion_header', 'local_restrict'));
         $mform->setExpanded('manualHeader', true); // false = collapsed by default
 
 
-        $records = $DB->get_records('local_secureaccess_labs');
+        $records = $DB->get_records('local_restrict_labs');
 
 
 
@@ -48,16 +48,16 @@ class insert_ranges_manual extends moodleform {
         }
 
 
-        $mform->addElement('select','labid',get_string('labname', 'local_secureaccess'),$options);
+        $mform->addElement('select','labid',get_string('labname', 'local_restrict'),$options);
         $mform->addRule('labid', get_string('required'), 'required', null, 'client');
 
         $mform->setType('labid', PARAM_TEXT);
 
 
-        $mform->addElement('textarea', 'manualIps', get_string('ips', 'local_secureaccess'), ['placeholder' => get_string('manual_ip_place', 'local_secureaccess'),'rows="10" cols="10"']);
+        $mform->addElement('textarea', 'manualIps', get_string('ips', 'local_restrict'), ['placeholder' => get_string('manual_ip_place', 'local_restrict'),'rows="10" cols="10"']);
         $mform->addRule('manualIps', get_string('required'), 'required', null, 'client');
 
-        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_secureaccess'));
+        $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('add_btn', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
 
