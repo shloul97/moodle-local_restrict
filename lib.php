@@ -33,7 +33,7 @@ function local_restrict_before_footer()
 
 
 
-	//echo '<script>console.log("Hello ' . $local_ip . '")</script>';
+
 	if (isloggedin() && !isguestuser()) {
 		$userid = $USER->id;
 
@@ -49,7 +49,6 @@ function local_restrict_before_footer()
 			foreach ($public_devices as $pdevice) {
 				if (trim($pdevice->ip) == trim($local_ip)) {
 					$public_ip = true;
-					//echo '<script>console.log("' . $public_ip . '")</script>';
 					break;
 				}
 			}
@@ -79,12 +78,6 @@ function local_restrict_before_footer()
                      WHERE u.userid = ? and q.timeopen < UNIX_TIMESTAMP() + 1800 and q.timeclose > UNIX_TIMESTAMP()
                 ', [$userid]);
 
-				// $user_devices = $DB->get_records_sql('
-                //     SELECT d.ip
-                //       FROM {local_restrict_user_exam} u
-                //       JOIN {local_restrict_devices} d ON u.privateip = d.id
-                //      WHERE u.userid = ?'
-				// 	  ,[$userid]);
 
                 $allowed_ips = array_map(function($d) {
                     return trim($d->ip);

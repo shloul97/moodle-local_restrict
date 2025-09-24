@@ -55,9 +55,6 @@ $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->js_call_amd('local_restrict/action', 'init', [
     'sesskey' => sesskey()
 ]);
-//$PAGE->requires->js('/local/restrict/amd/src/action2.js');
-
-//echo '<script src="/moodle/local/restrict/amd/src/action.js"></script>';
 
 $mform = new update_labs();
 
@@ -222,7 +219,6 @@ $context = [
 
 echo $OUTPUT->header();
 
-//echo $OUTPUT->render_from_template('local_restrict/insert_ranges',$context);
 echo $OUTPUT->render_from_template('local_restrict/update_labs', $context);
 
 echo $OUTPUT->footer();

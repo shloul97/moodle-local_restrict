@@ -153,10 +153,7 @@ $header = [
     "home" => new moodle_url("/local/restrict/index.php")
 ];
 
-/*$context = [
-    'header' => $header,
-    'form' => [$templatecontext]
-];*/
+
 
 $context = [
 
@@ -164,8 +161,6 @@ $context = [
     'table' => $data1['table'],
     'sesskey' => sesskey()
 ];
-
-//var_dump($options);
 
 
 echo $OUTPUT->header();

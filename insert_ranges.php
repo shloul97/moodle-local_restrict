@@ -298,7 +298,6 @@ echo $OUTPUT->header();
 echo  $OUTPUT->notification(get_string('ip_range_hint', 'local_restrict'), \core\output\notification::NOTIFY_WARNING, false);
 echo  $OUTPUT->notification(get_string('ip_example_hint', 'local_restrict'), \core\output\notification::NOTIFY_WARNING, false);
 
-//echo $OUTPUT->render_from_template('local_restrict/insert_ranges',$context);
 echo $OUTPUT->render_from_template('local_restrict/container',$context);
 
 
