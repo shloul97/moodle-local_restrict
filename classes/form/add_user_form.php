@@ -23,6 +23,10 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/formslib.php');
 
+/**
+ * Summary of add_user
+ * @return html
+ */
 class add_user extends moodleform {
 
     protected function definition() {

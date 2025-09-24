@@ -30,6 +30,11 @@ function xmldb_local_restrict_install() {
 
 
 // Add status value to use in user exams { 0 => Exam end , 1 => Exam active}
+/**
+ * Summary of insert_user_status
+ *
+ * @return void
+ */
 function insert_user_status(): void {
     global $DB;
     $records_user_status[] = (object) [
