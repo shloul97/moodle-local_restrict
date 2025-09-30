@@ -24,8 +24,8 @@ defined('MOODLE_INTERNAL') || die();
 
 function xmldb_local_restrict_install() {
 
-    insert_user_status();
-    insert_device_status();
+    xmldb_local_restrict_insert_user_status();
+    xmldb_local_restrict_insert_device_status();
 }
 
 
@@ -35,7 +35,7 @@ function xmldb_local_restrict_install() {
  *
  * @return void
  */
-function insert_user_status(): void {
+function xmldb_local_restrict_insert_user_status(): void {
     global $DB;
     $records_user_status[] = (object) [
         'code' => 0,
@@ -53,7 +53,7 @@ function insert_user_status(): void {
 
 
 // Add status value to use in devices { 0 => suspended , 1 => Active}
-function insert_device_status() {
+function xmldb_local_restrict_insert_device_status() {
     global $DB;
     $records[] = (object) [
         'code' => 0,

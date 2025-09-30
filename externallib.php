@@ -499,11 +499,11 @@ WHERE l.id $in_sql
             u.id AS user_id,
             q.id AS quiz_id,
             gm.groupid AS group_id
-            FROM mdl_user u
-            JOIN mdl_course c on c.id = ? AND u.username > 20000
-            JOIN mdl_quiz q ON q.course = c.id
-            JOIN mdl_groups g ON g.courseid = c.id
-            JOIN mdl_groups_members gm ON gm.userid = u.id AND gm.groupid= g.id
+            FROM {user} u
+            JOIN {course} c on c.id = ? AND u.username > 20000
+            JOIN {quiz} q ON q.course = c.id
+            JOIN {groups} g ON g.courseid = c.id
+            JOIN {groups_members} gm ON gm.userid = u.id AND gm.groupid= g.id
             WHERE q.id = ?
             ORDER BY u.id
         ', [

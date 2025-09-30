@@ -20,11 +20,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-
-require_once($CFG->dirroot . '/config.php');
-
-
 function local_restrict_before_footer()
 {
 	global $USER, $DB;
@@ -55,12 +50,13 @@ function local_restrict_before_footer()
 
 			if (!$public_ip) {
 
-				$context = context_system::instance(); // or use context_course::instance($courseid), etc.
+				$context = context_system::instance();
 
 				$roles = get_user_roles($context, $USER->id);
 
 				$has_role = false;
 				foreach ($roles as $role) {
+					// Check user role if student or teacher (plugin works on student only)
 					if (in_array($role->shortname, ['teacher', 'manager', 'coursecreator', 'editingteacher'])) {
 						$has_role = true;
 
@@ -69,33 +65,29 @@ function local_restrict_before_footer()
 				}
 
 				if (!$has_role && !is_siteadmin($userid)) {
-                // ? Get all allowed IPs for the user.
-                $user_devices = $DB->get_records_sql('
+					// ? Get all allowed IPs for the user.
+					$user_devices = $DB->get_records_sql('
                     SELECT d.ip
                       FROM {local_restrict_user_exam} u
                       JOIN {local_restrict_devices} d ON u.privateip = d.id
-                      join mdl_quiz q on q.id = u.examid
+                      JOIN {quiz} q on q.id = u.examid
                      WHERE u.userid = ? and q.timeopen < UNIX_TIMESTAMP() + 1800 and q.timeclose > UNIX_TIMESTAMP()
                 ', [$userid]);
 
 
-                $allowed_ips = array_map(function($d) {
-                    return trim($d->ip);
-                }, $user_devices);
+					$allowed_ips = array_map(function ($d) {
+						return trim($d->ip);
+					}, $user_devices);
 
-                // ? Check if current IP is in allowed list.
-                if (!empty($allowed_ips) && !in_array(trim($local_ip), $allowed_ips)) {
-                    \core\notification::add('You don\'t have access on this device.', \core\output\notification::NOTIFY_ERROR);
-                    require_logout();
-                    $microsoft_logout_url = "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=" . urlencode("https://exams.zu.edu.jo/login/logout.php");
-
-                    redirect($microsoft_logout_url);
-
-
-            }
-          }
+					// ? Check if current IP is in allowed list.
+					if (!empty($allowed_ips) && !in_array(trim($local_ip), $allowed_ips)) {
+						// Logout if check return true
+						\core\notification::add('You don\'t have access on this device.', \core\output\notification::NOTIFY_ERROR);
+						require_logout();
+					}
 				}
 			}
 		}
 	}
+}
 

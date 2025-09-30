@@ -60,8 +60,7 @@ $PAGE->set_title("Insert Ranges");
 
 if ($mform->is_cancelled()) {
 
-}
-else if ($fromform = $mform->get_data()) {
+} else if ($fromform = $mform->get_data()) {
     $records = new stdClass();
 
 
@@ -77,51 +76,45 @@ else if ($fromform = $mform->get_data()) {
 
 
     // First digit of last box in ip address Ex: 127.0.0.178 last_start = 1 from (178)
-    $last_start = (int)substr(strrchr( $records->ipstart, '.'), 1);
+    $last_start = (int) substr(strrchr($records->ipstart, '.'), 1);
     // Last digit of last box in ip address Ex: 127.0.0.178 last_end = 8 from (178)
-    $last_end = (int)substr(strrchr($records->ipend, '.'), 1);
+    $last_end = (int) substr(strrchr($records->ipend, '.'), 1);
 
-    if($last_start == 100)
-    {
+    if ($last_start == 100) {
         $i = 1;
-    }
-    else {
+    } else {
         $i = 0;
     }
 
     $loop = $last_end - $last_start;
 
 
-    for($i = 0; $i<= $loop; $i++)
-    {
+    for ($i = 0; $i <= $loop; $i++) {
 
-
+        // Convert ip to string
         $ip_long = ip2long($records->ipstart);
-        $ip_long+= $i;
+        // Start Ip from first input ip 127.0.0.1
+        $ip_long += $i; /* => 127.0.0.2 */
+        // Convert new ip from string to ip
         $newIp = long2ip($ip_long);
 
 
-        if($last_start == 1 || $last_start == 100)
-        {
+        if ($last_start == 1 || $last_start == 100) {
             \core\notification::error(get_string('err_iprange', 'local_restrict'));
             break;
-
         }
-        if($last_start >= 100)
-        {
-
+        if ($last_start >= 100) {
             $deviceNumber = $last_start + $i;
-            $deviceToSave = (int)substr($deviceNumber, -2);
+            // Get last two digit from ip if last digits greater tha 100
+            $deviceToSave = (int) substr($deviceNumber, -2);
             array_push($device_array, array(
-                "deviceNo" => $deviceToSave,
+                "deviceNo" => $deviceToSave, /* Device number is the last digit\s from ip Ex 127.0.0.(33) Device No. 33 */
                 "deviceIp" => $newIp
             ));
-        }
-        else
-        {
+        } else {
             $deviceNumber = $last_start + $i;
             array_push($device_array, array(
-                "deviceNo" => $deviceNumber,
+                "deviceNo" => $deviceNumber, /* Device number is the last digit\s from ip Ex 127.0.0.(33) Device No. 33 */
                 "deviceIp" => $newIp
             ));
         }
@@ -136,156 +129,143 @@ else if ($fromform = $mform->get_data()) {
         $record->ip = $ip;
         $record->device_number = $number;
         $record->device_type = 'private';
-        $record->labid = $fromform->labid ;
+        $record->labid = $fromform->labid;
 
-        if($DB->insert_record('local_restrict_devices', $record)){
-
-        }
-        else{
+        // Try To insert device (ip,number) in devices Table
+        try {
+            $DB->insert_record('local_restrict_devices', $record);
+        } catch (dml_write_exception $e) {
             $ips_check_array[] = $records->ip = $ip[0];
         }
     }
-    if(empty($ips_check_array)){
+    if (empty($ips_check_array)) {
         echo $OUTPUT->notification(get_string('ip_success', 'local_restrict'), \core\output\notification::NOTIFY_SUCCESS, false);
-    }
-    else{
-        foreach($ips_check_array as $ipcheck)
-        echo $OUTPUT->notification($ipcheck.' '.get_string('err_ipinsertion', 'local_restrict'), \core\output\notification::NOTIFY_ERROR, false);
+    } else {
+        echo $OUTPUT->notification(get_string('err_ipinsertion', 'local_restrict'), \core\output\notification::NOTIFY_ERROR, false);
     }
 
 
 
 }
 
-if($mform_manual->is_cancelled()){
+if ($mform_manual->is_cancelled()) {
 
-}else if($fromform = $mform_manual->get_data()){
+} else if ($fromform = $mform_manual->get_data()) {
     $records = new stdClass();
 
     $labId = $fromform->labid;
     $ips_text = $fromform->manualIps;
 
+    // Get full ip with device number line by line
     $lines = explode("\n", $ips_text);
 
     $ips = [];
-
     foreach ($lines as $line) {
-        $ips[] = explode(",",$line);
+        // separate device ip and device number
+        $ips[] = explode(",", $line);
     }
-
     $ips_check_array = [];
-    foreach($ips as $ip){
-
+    foreach ($ips as $ip) {
         $records->ip = $ip[0];
         $records->device_number = $ip[1];
         $records->device_type = 'private';
         $records->labid = $labId;
-
-
-        if($DB->insert_record('local_restrict_devices', $records)){
-
-
-        }else{
+        try {
+            $DB->insert_record('local_restrict_devices', $records);
+        } catch (dml_write_exception $e) {
             $ips_check_array[] = $records->ip = $ip[0];
         }
-
     }
-    if(empty($ips_check_array)){
+
+
+    if (empty($ips_check_array)) {
         echo $OUTPUT->notification(get_string('ip_success', 'local_restrict'), \core\output\notification::NOTIFY_SUCCESS, false);
-    }
-    else{
-        foreach($ips_check_array as $ipcheck)
-        echo $OUTPUT->notification($ipcheck.' '.get_string('err_ipinsertion', 'local_restrict'), \core\output\notification::NOTIFY_ERROR, false);
+    } else {
+        echo $OUTPUT->notification(get_string('err_ipinsertion', 'local_restrict'), \core\output\notification::NOTIFY_ERROR, false);
     }
 
 
 }
 
 
-if($mform_admin->is_cancelled()){
+if ($mform_admin->is_cancelled()) {
 
-}
-else if($fromform = $mform_admin->get_data()){
+} else if ($fromform = $mform_admin->get_data()) {
     $records = new stdClass();
 
     $labId = $fromform->labid;
     $ips_text = $fromform->admin_ips;
 
+
+    // Get full ip with device number line by line
     $lines = explode("\n", $ips_text);
 
     $ips = [];
 
     foreach ($lines as $line) {
         $ips[] = trim($line);
-
     }
-
 
     $ips_check_array = [];
     $device_check = true;
-    foreach($ips as $ip){
-
-
-
+    foreach ($ips as $ip) {
+        // Check if device exist or not
         $deviceId = $DB->get_field('local_restrict_devices', 'id', ['ip' => $ip]);
-
         $records->labid = $labId;
         $records->device_id = $deviceId;
-
-        if($deviceId){
-            if($DB->execute('INSERT INTO {local_restrict_admin_devices}(labid, device_id) VALUES (?,?)', [
-            $labId,
-            $deviceId
-            ])){
-
-
+        if ($deviceId) {
+            try{
+                // Admin ip insertion
+                $DB->execute('INSERT INTO {local_restrict_admin_devices}(labid, device_id) VALUES (?,?)', [
+                    $labId,
+                    $deviceId
+                ]);
             }
-            else{
+             catch(dml_write_exception $e) {
                 $ips_check_array = $ip;
             }
-        }else{
+        } else {
             $ips_check_array = $ip;
             $device_check = false;
             echo $OUTPUT->notification(get_string('err_ipnull_admin', 'local_restrict'), \core\output\notification::NOTIFY_ERROR, false);
         }
 
     }
-    if(empty($ips_check_array)){
-        echo '<br><br><br><br>';
+    if (empty($ips_check_array)) {
         echo $OUTPUT->notification(get_string('ip_success', 'local_restrict'), \core\output\notification::NOTIFY_SUCCESS, false);
-    }
-    else{
-        foreach($ips_check_array as $ipcheck)
-        echo '<br><br><br><br>';
-        echo $OUTPUT->notification($ipcheck.' '.get_string('err_ipinsertion', 'local_restrict'), \core\output\notification::NOTIFY_ERROR, true);
+    } else {
+        echo $OUTPUT->notification(get_string('err_ipinsertion', 'local_restrict'), \core\output\notification::NOTIFY_ERROR, true);
     }
 
 
 }
-
-
+// Template context to automatic ip insertion
 $template_ctx_auto = [
     'submitted' => false,
     'formhtml' => $mform->render()
 ];
 
+// Template context to manual ip insertion
 $template_ctx_manual = [
     'submitted' => false,
     'formhtml' => $mform_manual->render()
 ];
 
+// Template context to admin ip insertion
 $template_admin_devices = [
     'submitted' => false,
     'formhtml' => $mform_admin->render()
 ];
 
+
+// Plugin Header
 $header = [
     "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
-    "insertLabs"=> new moodle_url("/local/restrict/insert_labs.php"),
-    "insertIp"=> new moodle_url("/local/restrict/insert_ranges.php"),
-    "updateLabs"=> new moodle_url("/local/restrict/update_labs.php"),
-    "inquiry"=> new moodle_url("/local/restrict/inquiry.php"),
-    "home"=> new moodle_url("/local/restrict/index.php")
+    "insertLabs" => new moodle_url("/local/restrict/insert_labs.php"),
+    "insertIp" => new moodle_url("/local/restrict/insert_ranges.php"),
+    "updateLabs" => new moodle_url("/local/restrict/update_labs.php"),
+    "inquiry" => new moodle_url("/local/restrict/inquiry.php"),
+    "home" => new moodle_url("/local/restrict/index.php")
 ];
 
 $context = [
@@ -295,10 +275,10 @@ $context = [
 
 echo $OUTPUT->header();
 
-echo  $OUTPUT->notification(get_string('ip_range_hint', 'local_restrict'), \core\output\notification::NOTIFY_WARNING, false);
-echo  $OUTPUT->notification(get_string('ip_example_hint', 'local_restrict'), \core\output\notification::NOTIFY_WARNING, false);
+echo $OUTPUT->notification(get_string('ip_range_hint', 'local_restrict'), \core\output\notification::NOTIFY_WARNING, false);
+echo $OUTPUT->notification(get_string('ip_example_hint', 'local_restrict'), \core\output\notification::NOTIFY_WARNING, false);
 
-echo $OUTPUT->render_from_template('local_restrict/container',$context);
+echo $OUTPUT->render_from_template('local_restrict/container', $context);
 
 
 

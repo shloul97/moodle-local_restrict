@@ -58,59 +58,22 @@ $PAGE->requires->js_call_amd('local_restrict/selector', 'init');
 // disprute js file
 $PAGE->requires->js_call_amd('local_restrict/distrpute', 'init');
 
-
-
-
-
 if ($mform->is_cancelled()) {
-
-
-
 }
 else if ($fromform = $mform->get_data()) {
-
-
     $lab_ips = $DB->get_records_select('local_restrict_devices','labid = ?',[1]);
-
     $record = new stdClass();
     $record->course = $fromform->course;
-
     $course_exams = $DB->get_records_select('quiz','course = ?',[$record->course],2);
-
-
-
-
-
-
-    echo '<h1>course ID:' .$record->course.'</h1>';
-
-
-
-
-
-    try
-    {
-
-
-
-    }
-    catch(Exception $e)
-    {
-        \core\notification::error("Failed to insert the lab.");
-    }
-
-
 }
 
-
-
+// Distrpute form context to tamplate file
 $templatecontext = [
     'submitted' => false,
     'formhtml' => $mform->render()
 ];
 
-
-
+// Plugin header
 $header = [
     "insertGroup" => new moodle_url("/local/restrict/insert_groups.php"),
     "insertLabs"=> new moodle_url("/local/restrict/insert_labs.php"),
