@@ -45,6 +45,7 @@ define(['jquery', 'core/ajax','core/str'], function ($, Ajax,str) {
                             $('#tr-' + courseId).fadeOut(300);
                         }).catch(function (err) {
                             let fullError = `
+<<<<<<< HEAD
                                      <div style="color:red;">
                                         <strong> ${str.get_string('ajxerr','local_restrict')}</strong><br>
                                         ${msg} ${err.message || 'N/A'}<br>
@@ -54,6 +55,16 @@ define(['jquery', 'core/ajax','core/str'], function ($, Ajax,str) {
                                         ${err.responseText || JSON.stringify(err)}<br>
                                         ${args}
                                         ${JSON.stringify(courseargs)}
+=======
+                                    <div style="color:red;">
+                                        <strong>AJAX Error:</strong><br>
+                                       ${str.get_string('msg', 'local_restrict')} ${err.message || 'N/A'}<br>
+                                        ${str.get_string('status', 'local_restrict')} ${err.status || 'N/A'}<br>
+                                        ${str.get_string('statustxt', 'local_restrict')} ${err.statusText || 'N/A'}<br>
+                                        ${str.get_string('response', 'local_restrict')}
+                                        ${err.responseText || JSON.stringify(err)}<br>
+                                        ${str.get_string('args', 'local_restrict')} ${JSON.stringify(args)}
+>>>>>>> 87f700cb9139ee8aebe0697f6987b0063997bacc
                                     </div>
                                 `;
                             $('#ajx-err').html(fullError);
