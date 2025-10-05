@@ -1,4 +1,4 @@
-define(['jquery', 'core/ajax'], function ($, Ajax) {
+define(['jquery', 'core/ajax','core/str'], function ($, Ajax,str) {
     'use strict';
     return {
         init: function () {
@@ -21,11 +21,11 @@ define(['jquery', 'core/ajax'], function ($, Ajax) {
                             let fullError = `
                                     <div style="color:red;">
                                         <strong>AJAX Error:</strong><br>
-                                        Message: ${err.message || 'N/A'}<br>
-                                        Status: ${err.status || 'N/A'}<br>
-                                        Status Text: ${err.statusText || 'N/A'}<br>
-                                        Response: ${err.responseText || JSON.stringify(err)}<br>
-                                        Arguments: ${JSON.stringify(args)}
+                                       ${str.get_string('msg', 'local_restrict')} ${err.message || 'N/A'}<br>
+                                        ${str.get_string('status', 'local_restrict')} ${err.status || 'N/A'}<br>
+                                        ${str.get_string('statustxt', 'local_restrict')} ${err.statusText || 'N/A'}<br>
+                                        ${str.get_string('response', 'local_restrict')} ${err.responseText || JSON.stringify(err)}<br>
+                                        ${str.get_string('args', 'local_restrict')} ${JSON.stringify(usersArgs)}
                                     </div>
                                 `;
                             $('#ajx-err').html(fullError);

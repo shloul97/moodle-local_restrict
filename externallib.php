@@ -26,27 +26,7 @@ require_once($CFG->libdir . '/externallib.php');
 
 class local_restrict_external extends external_api
 {
-
-    //------ Contructer -----------
-    public function __construct()
-    {
-        require_login();
-        require_sesskey();
-
-        if (!is_siteadmin()) {
-            throw new required_capability_exception(
-                context_system::instance(),
-                'moodle/site:config',
-                'nopermissions',
-                ''
-            );
-        }
-    }
-
-
     // ---------------------- PARAMETERS -------------------------
-
-
 
     // --------------------- STOP PROCESS PARAMETERS --------------
 
@@ -176,6 +156,11 @@ class local_restrict_external extends external_api
             'quiz' => $out_quiz,
 
         ]);
+
+        // Use system context for global admin actions (or context for the lab's course)
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
 
         $labs = $params['labs'];
         $courseId = $params['courseid'];
@@ -411,10 +396,16 @@ WHERE l.id $in_sql
 
         global $DB;
 
+        // Use system context for global admin actions
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
+
         $quizesId = array();
 
         $quizesId = $DB->get_records_sql('SELECT id FROM {quiz}
             WHERE course = ? and timeopen > UNIX_TIMESTAMP()', [$courseId]);
+
 
 
 
@@ -433,6 +424,12 @@ WHERE l.id $in_sql
     {
 
         global $DB;
+
+        // Use system context for global admin actions
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
+
         $module_quiz = $DB->get_field('modules', 'id', ['name' => 'quiz']);
 
         $groups = $DB->get_field('course_modules', 'availability', [
@@ -537,16 +534,17 @@ WHERE l.id $in_sql
     {
 
         global $DB;
-
-
-
-
         $params = self::validate_parameters(self::update_labs_parameters(), [
             'action' => $action,
             'deviceid' => $deviceid,
             'dataaction' => $dataaction,
             'lab' => $lab
         ]);
+
+        // Use system context for global admin actions
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
 
 
 
@@ -689,6 +687,11 @@ WHERE l.id $in_sql
             'courseid' => $courseid,
         ]);
 
+        // Use system context for global admin actions
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
+
         $courseid = $params['courseid'];
 
         global $DB;
@@ -733,6 +736,11 @@ WHERE l.id $in_sql
             'courseid' => $courseid,
         ]);
 
+        // Use system context for global admin actions
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
+
         $courseid = $params['courseid'];
 
         global $DB;
@@ -764,7 +772,7 @@ WHERE l.id $in_sql
     //---------- END Groups To Display --------------------
 
     //---------- Delete Courses Records --------------------
-     /**
+    /**
      * Deletes user exam records for all quizzes in a course (for redistribution).
      *
      * @param int $courseid The course ID.
@@ -786,6 +794,11 @@ WHERE l.id $in_sql
             'courseid' => $courseid,
             'action' => $action
         ]);
+
+        // Use system context for global admin actions
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
 
 
         $courseId = $params['courseid'];

@@ -66,7 +66,7 @@ $string['device_ip'] = 'Device IP';
 /* Headers */
 $string['quiz_distrputed_header'] = 'Distpute By Quiz: ';
 $string['insertlabs_header'] = 'Insert Labs';
-$string['insertips_header'] = 'Insert Labs';
+$string['insertips_header'] = 'Insert Ranges';
 $string['insertgroups_header'] = 'Distrpute users';
 $string['updatelabs_header'] = 'Update Labs';
 $string['search'] = 'Search';
@@ -89,6 +89,21 @@ $string['privacy:metadata:local_restrict_user_exam:groupid'] = 'The group associ
 $string['privacy:metadata:local_restrict_user_exam:privateip'] = 'The private IP address of the device used.';
 $string['privacy:metadata:local_restrict_user_exam:publicip'] = 'The public IP address recorded.';
 $string['privacy:metadata:local_restrict_user_exam:statusid'] = 'The current status of the user in the exam.';
+
+/* JS */
+$string['msg'] = "Message: ";
+$string['status'] = "Status: ";
+$string['statustxt'] = "Status Text: ";
+$string['response'] = "Response: ";
+$string['args'] = "Arguments: ";
+
+$string['jserr'] = "Error: ";
+$string['ajxerr'] = "AJAX Error: ";
+
+$string['delconfirm'] = "Are You sure you want to delete record ?";
+$string['mkadminconfirm'] = "Are You sure you want to make this device Admin ?";
+$string['adminremovecofnirm'] = "Are You sure you want to Remove this device From Admin ?";
+
 
 
 

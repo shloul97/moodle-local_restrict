@@ -1,4 +1,4 @@
-define(['jquery','core/ajax'], function ($, Ajax) {
+define(['jquery','core/ajax','core/str'], function ($, Ajax,str) {
     'use strict';
     return {
         init: function () {
@@ -14,7 +14,7 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                 }
 
                 if (action === 'del') {
-                    if (confirm("Are You sure you want to delete record ?") == true) {
+                    if (confirm(str.get_string('delconfirm','local_restrict')) == true) {
 
 
 
@@ -29,8 +29,8 @@ define(['jquery','core/ajax'], function ($, Ajax) {
                         }])[0].then(function () {
                             $('#tr-' + deviceId).fadeOut(300);
                         }).catch(function (err) {
-                            let error = `<span>AJAX Error: ${err} <span><br><span>
-                    Error: ${err.message}</span><br><span>Args were :${requestArgs}</span>`;
+                            let error = `<span>${str.get_string('ajxerr','local_restrict')}: ${err} <span><br><span>
+                    ${str.get_string('jserr','local_restrict')} ${err.message}</span><br><span>${str.get_string('args','local_restrict')} ${requestArgs}</span>`;
                             $('#ajx-err').html(error);
 
                         });
@@ -68,8 +68,8 @@ define(['jquery','core/ajax'], function ($, Ajax) {
 
 
                     }).catch(function (err) {
-                        let error = `<span>AJAX Error: ${err} <span><br><span> Error:
-                      ${err.message}</span><br><span>Args were :${requestArgs}</span>`;
+                        let error = `<span>${str.get_string('ajxerr','local_restrict')}: ${err} <span><br><span> Error:
+                      ${err.message}</span><br><span>${str.get_string('args','local_restrict')} :${requestArgs}</span>`;
                         $('#ajx-err').html(error);
                     });
 
@@ -93,11 +93,11 @@ define(['jquery','core/ajax'], function ($, Ajax) {
 
 
                 if (dataAction == 'mkadmin') {
-                    confirmString = "Are You sure you want to make this device Admin ?";
+                    confirmString = str.get_string('mkadminconfirm','local_restrict');
 
                 }
                 else {
-                    confirmString = "Are You sure you want to Remove this device From Admin ?";
+                    confirmString =str.get_string('adminremovecofnirm','local_restrict');;
                 }
 
                 if (confirm(confirmString) == true) {
@@ -131,8 +131,8 @@ define(['jquery','core/ajax'], function ($, Ajax) {
 
 
                     }).catch(function (err) {
-                        let error = `<span>AJAX Error: ${err} <span><br><span>
-                      Error: ${err.message}</span><br><span>Args were :${requestArgs}</span>`;
+                        let error = `<span>${str.get_string('ajxerr','local_restrict')}: ${err} <span><br><span>
+                      ${str.get_string('jserr','local_restrict')} ${err.message}</span><br><span>${str.get_string('args','local_restrict')} ${requestArgs}</span>`;
                         $('#ajx-err').html(error);
                     });
 

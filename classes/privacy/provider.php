@@ -27,6 +27,8 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\writer;
+use core_privacy\local\request\core_userlist_provider;
+use core_privacy\local\request\userlist;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -35,7 +37,9 @@ defined('MOODLE_INTERNAL') || die();
  */
 class provider implements
     \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider {
+    \core_privacy\local\request\plugin\provider,
+    \core_privacy\local\request\core_userlist_provider
+{
 
     /**
      * Returns metadata about this plugin's data.
@@ -43,15 +47,16 @@ class provider implements
      * @param collection $collection
      * @return collection
      */
-    public static function get_metadata(collection $collection): collection {
+    public static function get_metadata(collection $collection): collection
+    {
         $collection->add_database_table(
             'local_restrict_user_exam',
             [
-                'userid'    => 'privacy:metadata:local_restrict_user_exam:userid',
-                'examid'    => 'privacy:metadata:local_restrict_user_exam:examid',
-                'groupid'   => 'privacy:metadata:local_restrict_user_exam:groupid',
+                'userid' => 'privacy:metadata:local_restrict_user_exam:userid',
+                'examid' => 'privacy:metadata:local_restrict_user_exam:examid',
+                'groupid' => 'privacy:metadata:local_restrict_user_exam:groupid',
                 'privateip' => 'privacy:metadata:local_restrict_user_exam:privateip',
-                'publicip'  => 'privacy:metadata:local_restrict_user_exam:publicip',
+                'publicip' => 'privacy:metadata:local_restrict_user_exam:publicip',
                 'status_id' => 'privacy:metadata:local_restrict_user_exam:statusid',
             ],
             'privacy:metadata:local_restrict_user_exam'
@@ -65,7 +70,8 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist
      */
-    public static function get_contexts_for_userid(int $userid): contextlist {
+    public static function get_contexts_for_userid(int $userid): contextlist
+    {
         global $DB;
         $contextlist = new contextlist();
 
@@ -88,17 +94,30 @@ class provider implements
      *
      * @param approved_contextlist $contextlist
      */
-    public static function export_user_data(approved_contextlist $contextlist) {
+    public static function export_user_data(approved_contextlist $contextlist)
+    {
         global $DB;
 
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
-            $records = $DB->get_records('local_restrict_user_exam', ['userid' => $userid]);
-            if ($records) {
-                writer::with_context($context)->export_data(
-                    ['Secure Exam Access'],
-                    (object) $records
-                );
+            if ($context->contextlevel == CONTEXT_SYSTEM) {
+                $records = $DB->get_records('local_restrict_user_exam', ['userid' => $userid]);
+                if ($records) {
+                    $data = [];
+                    foreach ($records as $record) {
+                        $data[] = (object) [
+                            'examid' => $record->examid,
+                            'groupid' => $record->groupid,
+                            'privateip' => $record->privateip,
+                            'publicip' => $record->publicip,
+                            'status_id' => $record->status_id,
+                        ];
+                    }
+                    writer::with_context($context)->export_data(
+                        ['Secure Exam Access'],
+                        (object) ['exams' => $data]
+                    );
+                }
             }
         }
     }
@@ -108,7 +127,8 @@ class provider implements
      *
      * @param \context $context
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(\context $context)
+    {
         global $DB;
 
         if ($context->contextlevel == CONTEXT_SYSTEM) {
@@ -119,27 +139,18 @@ class provider implements
     /**
      * Delete multiple users within a single context.
      *
-     * @param approved_contextlist $contextlist
+     * @param userlist $userlist The approved user list.
      */
-    public static function delete_data_for_users(approved_contextlist $contextlist) {
+    public static function delete_data_for_users(userlist $userlist)
+    {
         global $DB;
 
-        foreach ($contextlist->get_userids() as $userid) {
-            $DB->delete_records('local_restrict_user_exam', ['userid' => $userid]);
-        }
-    }
-
-    /**
-     * Delete all user data for the specified user, in the given contexts.
-     *
-     * @param approved_contextlist $contextlist
-     */
-    public static function delete_data_for_user(approved_contextlist $contextlist) {
-        global $DB;
-
-        $userid = $contextlist->get_user()->id;
-        foreach ($contextlist->get_contexts() as $context) {
-            $DB->delete_records('local_restrict_user_exam', ['userid' => $userid]);
+        if ($userlist->get_context()->contextlevel == CONTEXT_SYSTEM) {
+            $DB->delete_records_list(
+                'local_restrict_user_exam',
+                'userid',
+                $userlist->get_userids()
+            );
         }
     }
 }
