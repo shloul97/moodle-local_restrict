@@ -1,7 +1,38 @@
-define(['jquery','core/ajax','core/str'], function ($, Ajax,str) {
+define(['jquery', 'core/ajax', 'core/str'], function ($, Ajax, str) {
     'use strict';
     return {
         init: function () {
+
+            var ajxerr = '';
+            var jserr = '';
+            var args = '';
+            var mkadminconfirm;
+            var adminremovecofnirm;
+            var delconfirm;
+
+
+            var strings = [
+                { key: 'ajxerr', component: 'local_restrict' },
+                { key: 'jserr', component: 'local_restrict' },
+                { key: 'args', component: 'local_restrict' },
+                { key: 'mkadminconfirm', component: 'local_restrict' },
+                { key: 'adminremovecofnirm', component: 'local_restrict' },
+                { key: 'delconfirm', component: 'local_restrict' }
+
+            ];
+
+            str.get_strings(strings).then(function (results) {
+                ajxerr = results[0];
+                jserr = results[1];
+                args = results[2];
+                mkadminconfirm = results[3];
+                adminremovecofnirm = results[4];
+                delconfirm = results[5];
+            }).catch(function (e) {
+                alert('Failed to load strings:', e);
+            });
+
+
             $('button[name=action-btn]').click(function () {
 
                 var deviceId = $(this).attr('data-id');
@@ -14,7 +45,7 @@ define(['jquery','core/ajax','core/str'], function ($, Ajax,str) {
                 }
 
                 if (action === 'del') {
-                    if (confirm(str.get_string('delconfirm','local_restrict')) == true) {
+                    if (confirm(delconfirm) == true) {
 
 
 
@@ -29,8 +60,9 @@ define(['jquery','core/ajax','core/str'], function ($, Ajax,str) {
                         }])[0].then(function () {
                             $('#tr-' + deviceId).fadeOut(300);
                         }).catch(function (err) {
-                            let error = `<span>${str.get_string('ajxerr','local_restrict')}: ${err} <span><br><span>
-                    ${str.get_string('jserr','local_restrict')} ${err.message}</span><br><span>${str.get_string('args','local_restrict')} ${requestArgs}</span>`;
+                            let error = `<span>${ajxerr} ${err} <span><br><span>
+                    ${jserr} ${err.message}</span><br><span>
+                    ${args} ${requestArgs}</span>`;
                             $('#ajx-err').html(error);
 
                         });
@@ -68,8 +100,9 @@ define(['jquery','core/ajax','core/str'], function ($, Ajax,str) {
 
 
                     }).catch(function (err) {
-                        let error = `<span>${str.get_string('ajxerr','local_restrict')}: ${err} <span><br><span> Error:
-                      ${err.message}</span><br><span>${str.get_string('args','local_restrict')} :${requestArgs}</span>`;
+                        let error = `<span>${ajxerr} ${err} <span><br><span>
+                    ${jserr} ${err.message}</span><br><span>
+                    ${args} ${requestArgs}</span>`;
                         $('#ajx-err').html(error);
                     });
 
@@ -93,11 +126,11 @@ define(['jquery','core/ajax','core/str'], function ($, Ajax,str) {
 
 
                 if (dataAction == 'mkadmin') {
-                    confirmString = str.get_string('mkadminconfirm','local_restrict');
+                    confirmString = mkadminconfirm;
 
                 }
                 else {
-                    confirmString =str.get_string('adminremovecofnirm','local_restrict');;
+                    confirmString = adminremovecofnirm;
                 }
 
                 if (confirm(confirmString) == true) {
@@ -131,8 +164,9 @@ define(['jquery','core/ajax','core/str'], function ($, Ajax,str) {
 
 
                     }).catch(function (err) {
-                        let error = `<span>${str.get_string('ajxerr','local_restrict')}: ${err} <span><br><span>
-                      ${str.get_string('jserr','local_restrict')} ${err.message}</span><br><span>${str.get_string('args','local_restrict')} ${requestArgs}</span>`;
+                        let error = `<span>${ajxerr} ${err} <span><br><span>
+                    ${jserr} ${err.message}</span><br><span>
+                    ${args} ${requestArgs}</span>`;
                         $('#ajx-err').html(error);
                     });
 

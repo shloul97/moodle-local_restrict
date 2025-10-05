@@ -131,6 +131,11 @@ class local_restrict_external extends external_api
         $params = self::validate_parameters(self::stop_process_parameters(), [
             'error' => $err
         ]);
+
+        $context = context_system::instance();
+        self::validate_context($context);
+        require_capability('local/restrict:manage', $context);
+
         $returns_value = $params['error'];
         return $returns_value;
     }

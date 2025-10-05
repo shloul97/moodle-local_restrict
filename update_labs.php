@@ -167,7 +167,7 @@ if ($mform->is_cancelled()) {
                 'btn_class' => $btn_class,
                 'btn_content' => $btn_content,
                 'btn_data' => $btn_data,
-                'adminBtn' => $admin_class,
+                'admin_btn' => $admin_class,
                 'admin_string' => $admin_string,
                 'data_admin' => $data_admin,
                 'labid' => $labid
