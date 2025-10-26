@@ -1,35 +1,27 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/.
 //
-// Secure Exam Access plugin for Moodle
-// Copyright (C) 2025 Moayad Shloul
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- *
+// Moodle is free software: you can redistribute it and/or modify.
+// it under the terms of the GNU General Public License as published by.
+// the Free Software Foundation, either version 3 of the License, or.
+// This file is part of Moodle - http://moodle.org/.
+// Moodle is distributed in the hope that it will be useful,.
+// but WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// This file is part of Moodle - http://moodle.org/.
+// You should have received a copy of the GNU General Public License.
+// This file is part of Moodle - http://moodle.org/.
+/*
  * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . '/formslib.php');
-
-
-
-class insert_groups extends moodleform
-{
-
-    protected function definition()
-    {
+require_once $CFG->libdir . '/formslib.php';
+class insert_groups extends moodleform {
+    protected function definition() {
 
         global $OUTPUT, $PAGE, $CFG, $DB;
 
@@ -37,9 +29,8 @@ class insert_groups extends moodleform
 
         $records = $DB->get_records('course');
 
-
-        // Errors div display (Work with debugging)
-        $err_div = '
+        // Errors div display (Work with debugging).
+        $errdiv = '
         <div class="title mt-3">
                                 <span id="ajx-err" class="text-danger">
 
@@ -47,9 +38,9 @@ class insert_groups extends moodleform
                             </div>
         ';
 
-        $mform->addElement('html', $err_div);
+        $mform->addElement('html', $errdiv);
 
-        // Courses Dropdown Menu
+        // Courses Dropdown Menu.
         $html = '<div class="dropdown-checkbox">
             <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 ' . get_string('selectcourse', 'local_restrict') . '
@@ -63,8 +54,7 @@ class insert_groups extends moodleform
 
                 ';
 
-
-        // Sort courses in dropdown menu
+        // Sort courses in dropdown menu.
         foreach ($records as $choice) {
 
             $html .= '<label class="dropdown-item">
@@ -75,11 +65,6 @@ class insert_groups extends moodleform
 
         }
 
-
-
-
-
-
         $html .= '   </div> <!-- End of scrollable area -->
                     </div>
                 </div>
@@ -87,34 +72,30 @@ class insert_groups extends moodleform
 
         $mform->addElement('html', $html);
 
-
-        // Display Quizes in course
-        $html_quizes = '
+        // Display Quizes in course.
+        $htmlquizes = '
         <div class="my-3">
-            <h4>'.get_string('quiz_distrputed_header','local_restrict').':</h4>
+            <h4>'.get_string('quiz_distrputed_header', 'local_restrict').':</h4>
         </div>
         <div class="quizes-div mt-3" id="quizes-div">
 
         </div>
         ';
 
-        $mform->addElement('html', $html_quizes);
+        $mform->addElement('html', $htmlquizes);
 
-
-
-
-        // Display Labs
-        $html_labs = ' <div class="labs-div mt-3">
+        // Display Labs.
+        $htmllabs = ' <div class="labs-div mt-3">
             <div class="labs-label-div">
                 <h4>Select Labs: </h4>
             </div>
             <div class="labs-select-div">
             ';
 
-        $records_labs = $DB->get_records('local_restrict_labs');
+        $recordslabs = $DB->get_records('local_restrict_labs');
 
-        foreach ($records_labs as $choice) {
-            $html_labs .= '<div class="form-check d-flex flex-column justify-content-right">
+        foreach ($recordslabs as $choice) {
+            $htmllabs .= '<div class="form-check d-flex flex-column justify-content-right">
                    <input class="form-check-input" name="labs[]" type="checkbox" value="' . $choice->id . '" id="lab-' . $choice->id . '">
                 <label class="form-check-label" for="lab-' . $choice->id . '">
                   ' . $choice->lab_name . '
@@ -123,25 +104,16 @@ class insert_groups extends moodleform
 
         }
 
-
-
-        $html_labs .= '</div>
+        $htmllabs .= '</div>
         </div>';
 
-        $mform->addElement('html', $html_labs);
-
-
+        $mform->addElement('html', $htmllabs);
 
         $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('distrbute_btn', 'local_restrict'));
 
         $mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
-
     }
-
-
-    function validation($data, $files)
-    {
+    function validation($data, $files) {
         return array();
     }
-
 }

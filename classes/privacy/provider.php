@@ -1,22 +1,20 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/.
 //
-// Secure Exam Access plugin for Moodle
-// Copyright (C) 2025 Moayad Shloul
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- *
+// Moodle is free software: you can redistribute it and/or modify.
+// it under the terms of the GNU General Public License as published by.
+// the Free Software Foundation, either version 3 of the License, or.
+// This file is part of Moodle - http://moodle.org/.
+// Moodle is distributed in the hope that it will be useful,.
+// but WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// This file is part of Moodle - http://moodle.org/.
+// You should have received a copy of the GNU General Public License.
+// This file is part of Moodle - http://moodle.org/.
+/*
  * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
 
@@ -38,17 +36,17 @@ defined('MOODLE_INTERNAL') || die();
 class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\plugin\provider,
-    \core_privacy\local\request\core_userlist_provider
-{
+    \core_privacy\local\request\core_userlist_provider {
+
+
 
     /**
      * Returns metadata about this plugin's data.
      *
-     * @param collection $collection
+     * @param  collection $collection
      * @return collection
      */
-    public static function get_metadata(collection $collection): collection
-    {
+    public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
             'local_restrict_user_exam',
             [
@@ -67,11 +65,10 @@ class provider implements
     /**
      * Get the list of contexts that contain user information.
      *
-     * @param int $userid The user to search.
+     * @param  int $userid The user to search.
      * @return contextlist
      */
-    public static function get_contexts_for_userid(int $userid): contextlist
-    {
+    public static function get_contexts_for_userid(int $userid): contextlist {
         global $DB;
         $contextlist = new contextlist();
 
@@ -94,8 +91,7 @@ class provider implements
      *
      * @param approved_contextlist $contextlist
      */
-    public static function export_user_data(approved_contextlist $contextlist)
-    {
+    public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
 
         $userid = $contextlist->get_user()->id;
@@ -127,8 +123,7 @@ class provider implements
      *
      * @param \context $context
      */
-    public static function delete_data_for_all_users_in_context(\context $context)
-    {
+    public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
 
         if ($context->contextlevel == CONTEXT_SYSTEM) {
@@ -141,8 +136,7 @@ class provider implements
      *
      * @param userlist $userlist The approved user list.
      */
-    public static function delete_data_for_users(userlist $userlist)
-    {
+    public static function delete_data_for_users(\core_privacy\local\request\approved_userlist $userlist) {
         global $DB;
 
         if ($userlist->get_context()->contextlevel == CONTEXT_SYSTEM) {
@@ -151,6 +145,35 @@ class provider implements
                 'userid',
                 $userlist->get_userids()
             );
+        }
+    }
+
+    /**
+     * Delete data for a single user.
+     *
+     * @param approved_contextlist $contextlist
+     */
+    public static function delete_data_for_user(approved_contextlist $contextlist): void {
+        global $DB;
+        $userid = $contextlist->get_user()->id;
+
+        if (!empty($userid)) {
+            $DB->delete_records('local_restrict_user_exam', ['userid' => $userid]);
+        }
+    }
+
+     /**
+      * Get users who have data in a given context.
+      *
+      * @param userlist $userlist
+      */
+    public static function get_users_in_context(userlist $userlist): void {
+        global $DB;
+
+        $context = $userlist->get_context();
+        if ($context->contextlevel == CONTEXT_SYSTEM) {
+            $sql = "SELECT userid FROM {local_restrict_user_exam}";
+            $userlist->add_from_sql('userid', $sql, []);
         }
     }
 }

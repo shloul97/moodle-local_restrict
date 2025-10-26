@@ -16,13 +16,13 @@ Secure Exam Access is a Moodle plugin that restricts exam access based on device
 - Add PHPDoc tags
 - Code clean up
 - Fixed hard-coded language strings
-- Change coding style to "Moodle coding style" [https://moodledev.io/general/development/policies/codingstyle#naming-conventions]
+- Change coding style to "Moodle coding style" [https://moodledev.io/general/development/policies/codingstyle#naming-conventions].
 
 ### Bug Tracker
-Report issues directly on GitHub: [https://github.com/shloul97/moodle-local_restrict/issues](https://github.com/shloul97/moodle-local_restrict)
+Report issues directly on GitHub: [https://github.com/shloul97/moodle-local_restrict/issues](https://github.com/shloul97/moodle-local_restrict).
 
 ### License
-http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
 
 
 ### Package

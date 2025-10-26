@@ -1,23 +1,20 @@
 <?php
-
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/.
 //
-// Secure Exam Access plugin for Moodle
-// Copyright (C) 2025 Moayad Shloul
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- *
+// Moodle is free software: you can redistribute it and/or modify.
+// it under the terms of the GNU General Public License as published by.
+// the Free Software Foundation, either version 3 of the License, or.
+// This file is part of Moodle - http://moodle.org/.
+// Moodle is distributed in the hope that it will be useful,.
+// but WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// This file is part of Moodle - http://moodle.org/.
+// You should have received a copy of the GNU General Public License.
+// This file is part of Moodle - http://moodle.org/.
+/*
  * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -29,7 +26,7 @@ function xmldb_local_restrict_install() {
 }
 
 
-// Add status value to use in user exams { 0 => Exam end , 1 => Exam active}
+// Add status value to use in user exams { 0 => Exam end , 1 => Exam active}.
 /**
  * Summary of insert_user_status
  *
@@ -37,22 +34,21 @@ function xmldb_local_restrict_install() {
  */
 function xmldb_local_restrict_insert_user_status(): void {
     global $DB;
-    $records_user_status[] = (object) [
+    $recordsuserstatus[] = (object) [
         'code' => 0,
         'status' => 'Inactive'
     ];
 
-    $records_user_status[] = (object) [
+    $recordsuserstatus[] = (object) [
         'code' => 1,
         'status' => 'Active'
     ];
 
-
-    $DB->insert_records('local_restrict_user_exam_status', $records_user_status);
+    $DB->insert_records('local_restrict_user_exam_status', $recordsuserstatus);
 }
 
 
-// Add status value to use in devices { 0 => suspended , 1 => Active}
+// Add status value to use in devices { 0 => suspended , 1 => Active}.
 function xmldb_local_restrict_insert_device_status() {
     global $DB;
     $records[] = (object) [

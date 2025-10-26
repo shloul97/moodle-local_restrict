@@ -1,26 +1,24 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
-// Secure Exam Access plugin for Moodle
-// Copyright (C) 2025 Moayad Shloul
-//
-// This program is free software: you can redistribute it and/or modify
+// Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details
+//
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>
 /**
  *
  * @package   local_restrict
  * @copyright 2025 Moayad Shloul <shloul97@gmail.com>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later.
  */
-
-
 
 /* Main */
 $string['pluginname'] = "Secure Exam Access";
@@ -40,7 +38,7 @@ $string['record_success'] = 'Record inserted successfully with ID:';
 $string['record_err'] = 'Error inserting record.';
 $string['distrputed_err'] = "Users exceeds the maximum number of devices in one of quiz in the course" . "\ndevices:";
 $string['distrputed_sucess'] = 'Users Distriputed';
-$string['hint_notification']= 'Course should be has a group and every group has an exam';
+$string['hint_notification'] = 'Course should be has a group and every group has an exam';
 
 /* Elements */
 $string['delete'] = 'Delete';
@@ -60,7 +58,8 @@ $string['distrbute_btn'] = "Distrbute";
 $string['auto_insertion_header'] = 'Automatic insertion';
 $string['manual_insertion_header'] = 'Manual insertion';
 $string['ips'] = 'IPs';
-$string['manual_ip_place'] = "One IP per line (Separated) by comma with device name or number ... Exp:\n127.0.1.1,1 \n127.0.0.2,2\n...";
+$string['manual_ip_place'] = "One IP per line (Separated) by comma with device name or number
+... Exp:\n127.0.1.1,1 \n127.0.0.2,2\n...";
 $string['device_ip'] = 'Device IP';
 
 /* Headers */
@@ -103,8 +102,3 @@ $string['ajxerr'] = "AJAX Error: ";
 $string['delconfirm'] = "Are You sure you want to delete record ?";
 $string['mkadminconfirm'] = "Are You sure you want to make this device Admin ?";
 $string['adminremovecofnirm'] = "Are You sure you want to Remove this device From Admin ?";
-
-
-
-
-
