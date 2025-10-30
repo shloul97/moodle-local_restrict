@@ -25,7 +25,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once $CFG->libdir . '/externallib.php';
 
-class local_restrict_external extends external_api {
+class local_restrict_external extends external_api
+{
 
 
     // ---------------------- PARAMETERS -------------------------.
@@ -37,13 +38,14 @@ class local_restrict_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function stop_process_parameters() {
+    public static function stop_process_parameters()
+    {
         return new external_function_parameters(
             [
-            'error' => new external_multiple_structure(
-                new external_value(PARAM_INT, 'Lab IDs'),
-                new external_value(PARAM_TEXT, 'Descripe')
-            ),
+                'error' => new external_multiple_structure(
+                    new external_value(PARAM_INT, 'Lab IDs'),
+                    new external_value(PARAM_TEXT, 'Descripe')
+                ),
             ]
         );
     }
@@ -55,19 +57,20 @@ class local_restrict_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function get_users_parameters() {
+    public static function get_users_parameters()
+    {
         return new external_function_parameters(
             [
-            'courseid' => new external_value(PARAM_INT, 'Course ID'),
-            'labs' => new external_multiple_structure(
-                new external_value(PARAM_INT, 'Lab IDs')
-            ),
-            'quiz' => new external_multiple_structure(
-                new external_value(PARAM_INT, 'Quiz IDs'),
-                'List of quiz IDs',
-                VALUE_DEFAULT,
-                []
-            )
+                'courseid' => new external_value(PARAM_INT, 'Course ID'),
+                'labs' => new external_multiple_structure(
+                    new external_value(PARAM_INT, 'Lab IDs')
+                ),
+                'quiz' => new external_multiple_structure(
+                    new external_value(PARAM_INT, 'Quiz IDs'),
+                    'List of quiz IDs',
+                    VALUE_DEFAULT,
+                    []
+                )
             ]
         );
     }
@@ -78,13 +81,14 @@ class local_restrict_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function update_labs_parameters() {
+    public static function update_labs_parameters()
+    {
         return new external_function_parameters(
             [
-            'deviceid' => new external_value(PARAM_INT, 'Device ID'),
-            'action' => new external_value(PARAM_TEXT, 'Action'),
-            'dataaction' => new external_value(PARAM_TEXT, 'Data action', VALUE_DEFAULT, ''),
-            'lab' => new external_value(PARAM_INT, 'Lab ID', VALUE_DEFAULT, 0)
+                'deviceid' => new external_value(PARAM_INT, 'Device ID'),
+                'action' => new external_value(PARAM_TEXT, 'Action'),
+                'dataaction' => new external_value(PARAM_TEXT, 'Data action', VALUE_DEFAULT, ''),
+                'lab' => new external_value(PARAM_INT, 'Lab ID', VALUE_DEFAULT, 0)
             ]
         );
     }
@@ -95,10 +99,11 @@ class local_restrict_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function get_quizes_parameters() {
+    public static function get_quizes_parameters()
+    {
         return new external_function_parameters(
             [
-            'courseid' => new external_value(PARAM_INT, 'Course ID')
+                'courseid' => new external_value(PARAM_INT, 'Course ID')
             ]
         );
     }
@@ -109,10 +114,11 @@ class local_restrict_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function get_groups_parameters() {
+    public static function get_groups_parameters()
+    {
         return new external_function_parameters(
             [
-            'courseid' => new external_value(PARAM_INT, 'Course ID')
+                'courseid' => new external_value(PARAM_INT, 'Course ID')
             ]
         );
     }
@@ -123,11 +129,12 @@ class local_restrict_external extends external_api {
      *
      * @return external_function_parameters
      */
-    public static function courses_records_parameters() {
+    public static function courses_records_parameters()
+    {
         return new external_function_parameters(
             [
-            'courseid' => new external_value(PARAM_INT, 'Course Id'),
-            'action' => new external_value(PARAM_TEXT, 'Action')
+                'courseid' => new external_value(PARAM_INT, 'Course Id'),
+                'action' => new external_value(PARAM_TEXT, 'Action')
 
             ]
         );
@@ -136,10 +143,12 @@ class local_restrict_external extends external_api {
     // ---------------------- END PARAMETERS -------------------------.
 
     // Stop To avoids DDL.
-    public static function stop_process($err) {
+    public static function stop_process($err)
+    {
         $params = self::validate_parameters(
-            self::stop_process_parameters(), [
-            'error' => $err
+            self::stop_process_parameters(),
+            [
+                'error' => $err
             ]
         );
 
@@ -161,14 +170,16 @@ class local_restrict_external extends external_api {
      * @param  int[] $out_quiz Optional quiz IDs (if empty, all course quizzes are used).
      * @return array Status and message of distribution.
      */
-    public static function get_users($courseid, $labs = [], $outquiz = []) {
+    public static function get_users($courseid, $labs = [], $outquiz = [])
+    {
         global $DB;
 
         $params = self::validate_parameters(
-            self::get_users_parameters(), [
-            'courseid' => $courseid,
-            'labs' => $labs,
-            'quiz' => $outquiz,
+            self::get_users_parameters(),
+            [
+                'courseid' => $courseid,
+                'labs' => $labs,
+                'quiz' => $outquiz,
 
             ]
         );
@@ -178,11 +189,15 @@ class local_restrict_external extends external_api {
         self::validate_context($context);
         require_capability('local/restrict:manage', $context);
 
+        $check_max_count = true;
+
         $labs = $params['labs'];
         $courseid = $params['courseid'];
 
+
         // Check if user post quizes IDs (Optional).
         if (!empty($params['quiz'])) {
+
             foreach ($params['quiz'] as $quiz) {
                 $quizes[] = (object) ['id' => $quiz];
             }
@@ -202,16 +217,18 @@ class local_restrict_external extends external_api {
 
         list($insql, $inparams) = $DB->get_in_or_equal($labs, SQL_PARAMS_QM, 'param', true);
         $sqllabs = 'SELECT id from {local_restrict_devices}
-WHERE status = 1 AND labid ' . $insql;
+        WHERE status = 1 AND labid ' . $insql;
 
         /* -------------- CHECK IF Lab has an exam in the same time -------------------- */
         $sqlchecktime = "SELECT DISTINCT q.*
-FROM {local_restrict_user_exam} ue
-JOIN {quiz} q ON ue.examid = q.id
-JOIN {local_restrict_devices} d ON ue.privateip = d.id
-JOIN {local_restrict_labs} l ON d.labid = l.id
-WHERE l.id $insql
-  AND q.timeopen > UNIX_TIMESTAMP() - 43200";
+        FROM {local_restrict_user_exam} ue
+        JOIN {quiz} q ON ue.examid = q.id
+        JOIN {local_restrict_devices} d ON ue.privateip = d.id
+        JOIN {local_restrict_labs} l ON d.labid = l.id
+        WHERE l.id $insql
+        AND q.timeopen > UNIX_TIMESTAMP() - 43200";
+
+
 
         $checklabtime = $DB->get_records_sql($sqlchecktime, $inparams);
 
@@ -233,15 +250,23 @@ WHERE l.id $insql
                     if ($quizdata->timeopen >= $lab->timeopen && $quizdata->timeopen < $lab->timeclose) {
 
                         // Get related devices for this quiz from local_restrict_user_exam.
-                        $quiztimedevices = $DB->get_records_sql(
+                        $devices = $DB->get_records_sql(
                             "SELECT privateip FROM {local_restrict_user_exam} WHERE examid = ?",
                             [$lab->id]
                         );
 
+                        if (!empty($devices)) {
+                            // Merge all found devices into one flat array
+                            $quiztimedevices = array_merge($quiztimedevices, $devices);
+                        }
+
                     }
+
                 }
             }
         }
+
+
 
         /* ----------------------------- END CHECK  ------------------------------- */
 
@@ -253,15 +278,17 @@ WHERE l.id $insql
 
         // 2. Extract admin device IDs into a simple array.
         $adminids = array_map(
-            function ($item): mixed {
+            function ($item) {
                 return $item->device_id;
-            }, $adminiparray
+            },
+            $adminiparray
         );
 
         // 3. Filter $ips_array to remove devices that are in Admin devices.
         $filteredipsarr = array_filter(
-            $ipsarray, function ($item) use ($adminids) {
-                return !in_array($item->id, haystack: $adminids);
+            $ipsarray,
+            function ($item) use ($adminids) {
+                return !in_array($item->id, $adminids);
             }
         );
 
@@ -270,12 +297,14 @@ WHERE l.id $insql
             $quizdeviceips = array_map(
                 function ($d) {
                     return $d->privateip;
-                }, $quiztimedevices
+                },
+                $quiztimedevices
             );
 
             $lastfilteredips = array_filter(
-                $filteredipsarr, callback: function ($item) use ($quizdeviceips) {
-                    return !in_array($item->id, $quizdeviceips);
+                $filteredipsarr,
+                callback: function ($item) use ($quizdeviceips) {
+                    return !in_array((int) $item->id, $quizdeviceips);
                 }
             );
 
@@ -285,23 +314,28 @@ WHERE l.id $insql
         // 5. convert $ips_array to array values to prepare to shuffle.
         $filteredipsarr = array_values($filteredipsarr);
 
+
+        $teststr = '';
+        foreach ($filteredipsarr as $param) {
+            $teststr .= ', ' . $param->id;
+        }
+
+
+
         // Now $filtered_ips_arr contains devices NOT in admin list.
         $countdevices = count($filteredipsarr);
 
-        $countusers = 0;
-        $max = 0;
-        foreach ($users as $group) {
-            $countusers = count($group);
-            if ($max < $countusers) {
-                $max = $countusers;
-
-            }
+        // Check users count.
+        $count_users = 0;
+        foreach ($users as $user) {
+            $count_users += count($user);
         }
 
         // GET max quiz number --.
-        if ($countdevices < $max) {
-            return ['status' => 0, 'message' => get_string('distrputed_err', 'local_restrict') . $countdevices . "\n Users: " . $max];
+        if ((int) $countdevices < (int) $count_users) {
+            return ['status' => 0, 'message' => get_string('distrputed_err', 'local_restrict') . ' ' . $countdevices . "\n Users: " . $count_users];
         } else {
+
 
             // Preapre Distrputed -------.
             for ($x = 0; $x < count($quizes); $x++) {
@@ -337,13 +371,11 @@ WHERE l.id $insql
 
                         // Inserted Records.
                         $DB->insert_record('local_restrict_user_exam', $record, false);
-
                         // Remove used IP so it's not reused.
                         unset($availableips[$index]);
 
                     } catch (Exception $e) {
                         $distrputed = false;
-
                         $err = $e->getTraceAsString();
 
                     }
@@ -351,7 +383,7 @@ WHERE l.id $insql
                 }
             }
 
-            return ['status' => 1, 'message' => get_string('distrputed_sucess', 'local_restrict')];
+            return ['status' => 1, 'message' => get_string('distrputed_sucess', 'local_restrict') . ' ' . $teststr];
 
         }
 
@@ -364,7 +396,8 @@ WHERE l.id $insql
      * @param  int $courseId The course ID.
      * @return array List of quiz IDs.
      */
-    public static function get_course_quizes($courseid) {
+    public static function get_course_quizes($courseid)
+    {
 
         global $DB;
 
@@ -377,7 +410,8 @@ WHERE l.id $insql
 
         $quizesid = $DB->get_records_sql(
             'SELECT id FROM {quiz}
-            WHERE course = ? and timeopen > UNIX_TIMESTAMP()', [$courseid]
+            WHERE course = ? and timeopen > UNIX_TIMESTAMP()',
+            [$courseid]
         );
 
         return $quizesid;
@@ -391,7 +425,8 @@ WHERE l.id $insql
      * @param  int $quizId   The quiz ID.
      * @return array List of enrolled users with user_id, quiz_id, and group_id.
      */
-    public static function get_user_enrolled($courseid, $quizid) {
+    public static function get_user_enrolled($courseid, $quizid)
+    {
 
         global $DB;
 
@@ -403,10 +438,12 @@ WHERE l.id $insql
         $modulequiz = $DB->get_field('modules', 'id', ['name' => 'quiz']);
 
         $groups = $DB->get_field(
-            'course_modules', 'availability', [
-            'course' => (int) $courseid,
-            'module' => (int) $modulequiz,
-            'instance' => (int) $quizid
+            'course_modules',
+            'availability',
+            [
+                'course' => (int) $courseid,
+                'module' => (int) $modulequiz,
+                'instance' => (int) $quizid
             ]
         );
         $groupids = [];
@@ -432,13 +469,23 @@ WHERE l.id $insql
         q.id AS quiz_id,
         gm.groupid AS group_id
         FROM {user} u
-        JOIN {user_enrolments} ue ON ue.userid = u.id AND u.username > 20000
+        JOIN {user_enrolments} ue ON ue.userid = u.id
         JOIN {enrol} e ON e.id = ue.enrolid
         JOIN {course} c ON c.id = e.courseid
         JOIN {quiz} q ON q.course = c.id
         JOIN {groups_members} gm ON gm.userid = u.id
         WHERE c.id = ? AND q.id = ?
         AND gm.groupid ' . $insql . '
+        AND u.id NOT IN (
+        SELECT ra.userid
+        FROM {role_assignments} ra
+        JOIN {context} ctx ON ctx.id = ra.contextid
+        JOIN {role} r ON r.id = ra.roleid
+        WHERE ra.userid = u.id
+            AND ctx.contextlevel = 50
+            AND ctx.instanceid = c.id
+            AND r.shortname IN (\'manager\',\'editingteacher\', \'teacher\')
+        )
         ORDER BY u.id';
 
             $params = array_merge([(int) $courseid, (int) $quizid], $inparams);
@@ -457,15 +504,26 @@ WHERE l.id $insql
             q.id AS quiz_id,
             gm.groupid AS group_id
             FROM {user} u
-            JOIN {course} c on c.id = ? AND u.username > 20000
+            JOIN {course} c on c.id = ?
             JOIN {quiz} q ON q.course = c.id
             JOIN {groups} g ON g.courseid = c.id
             JOIN {groups_members} gm ON gm.userid = u.id AND gm.groupid= g.id
             WHERE q.id = ?
+            AND u.id NOT IN (
+            SELECT ra.userid
+            FROM {role_assignments} ra
+            JOIN {context} ctx ON ctx.id = ra.contextid
+            JOIN {role} r ON r.id = ra.roleid
+            WHERE ra.userid = u.id
+                AND ctx.contextlevel = 50
+                AND ctx.instanceid = c.id
+                AND r.shortname IN (\'manager\',\'editingteacher\', \'teacher\')
+            )
             ORDER BY u.id
-        ', [
-                (int) $courseid,
-                (int) $quizid,
+        ',
+                [
+                    (int) $courseid,
+                    (int) $quizid,
 
                 ]
             );
@@ -487,15 +545,17 @@ WHERE l.id $insql
      * @param  int    $lab        Lab ID (used for admin actions).
      * @return array Status and message of operation.
      */
-    public static function update_labs($deviceid, $action, $dataaction = '', $lab = 0) {
+    public static function update_labs($deviceid, $action, $dataaction = '', $lab = 0)
+    {
 
         global $DB;
         $params = self::validate_parameters(
-            self::update_labs_parameters(), [
-            'action' => $action,
-            'deviceid' => $deviceid,
-            'dataaction' => $dataaction,
-            'lab' => $lab
+            self::update_labs_parameters(),
+            [
+                'action' => $action,
+                'deviceid' => $deviceid,
+                'dataaction' => $dataaction,
+                'lab' => $lab
             ]
         );
 
@@ -591,8 +651,7 @@ WHERE l.id $insql
                     ];
                 }
 
-            }
-            else {
+            } else {
                 // Add Admin Devices.
                 $records = new stdClass();
                 $records->labid = $lab;
@@ -628,11 +687,13 @@ WHERE l.id $insql
      * @param  int $courseid The course ID.
      * @return array Status and list of quizzes (id, name).
      */
-    public static function get_quizes($courseid) {
+    public static function get_quizes($courseid)
+    {
 
         $params = self::validate_parameters(
-            self::get_quizes_parameters(), [
-            'courseid' => $courseid,
+            self::get_quizes_parameters(),
+            [
+                'courseid' => $courseid,
             ]
         );
 
@@ -649,7 +710,8 @@ WHERE l.id $insql
 
         $quizes = $DB->get_records_sql(
             'SELECT * FROM {quiz}
-        WHERE course = ?', [$courseid]
+        WHERE course = ?',
+            [$courseid]
         );
 
         foreach ($quizes as $quiz) {
@@ -680,11 +742,13 @@ WHERE l.id $insql
      * @param  int $courseid The course ID.
      * @return array Status and list of groups.
      */
-    public static function get_groups($courseid) {
+    public static function get_groups($courseid)
+    {
 
         $params = self::validate_parameters(
-            self::get_groups_parameters(), [
-            'courseid' => $courseid,
+            self::get_groups_parameters(),
+            [
+                'courseid' => $courseid,
             ]
         );
 
@@ -701,7 +765,8 @@ WHERE l.id $insql
 
         $groups = $DB->get_records_sql(
             'SELECT * FROM {groups}
-        WHERE courseid = ?', [$courseid]
+        WHERE courseid = ?',
+            [$courseid]
         );
 
         foreach ($groups as $group) {
@@ -733,7 +798,8 @@ WHERE l.id $insql
      * @param  string $action   Action (only "del" supported).
      * @return array Status and message.
      */
-    public static function courses_records($courseid, $action) {
+    public static function courses_records($courseid, $action)
+    {
 
         // Delete all course exams records to re-distrpute for technical error,.
         // Or no need this data any more.
@@ -741,9 +807,10 @@ WHERE l.id $insql
         global $DB;
 
         $params = self::validate_parameters(
-            self::courses_records_parameters(), [
-            'courseid' => $courseid,
-            'action' => $action
+            self::courses_records_parameters(),
+            [
+                'courseid' => $courseid,
+                'action' => $action
             ]
         );
 
@@ -805,11 +872,12 @@ WHERE l.id $insql
      *
      * @return external_single_structure
      */
-    public static function update_labs_returns() {
+    public static function update_labs_returns()
+    {
         return new external_single_structure(
             [
-            'status' => new external_value(PARAM_INT, 'Operation status (1 = success, 0 = failure)'),
-            'message' => new external_value(PARAM_TEXT, 'Message describing the result'),
+                'status' => new external_value(PARAM_INT, 'Operation status (1 = success, 0 = failure)'),
+                'message' => new external_value(PARAM_TEXT, 'Message describing the result'),
 
             ]
         );
@@ -822,16 +890,17 @@ WHERE l.id $insql
      *
      * @return external_single_structure
      */
-    public static function get_users_returns() {
+    public static function get_users_returns()
+    {
         return new external_single_structure(
             [
-            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
-            'message' => new external_value(PARAM_TEXT, 'Result message'),
-            'results' => new external_multiple_structure(
-                new external_value(PARAM_RAW, 'Details of distribution'),
-                'Optional result details',
-                VALUE_OPTIONAL
-            )
+                'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+                'message' => new external_value(PARAM_TEXT, 'Result message'),
+                'results' => new external_multiple_structure(
+                    new external_value(PARAM_RAW, 'Details of distribution'),
+                    'Optional result details',
+                    VALUE_OPTIONAL
+                )
             ]
         );
     }
@@ -842,19 +911,20 @@ WHERE l.id $insql
      *
      * @return external_single_structure
      */
-    public static function get_quizes_returns() {
+    public static function get_quizes_returns()
+    {
         return new external_single_structure(
             [
-            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
-            'message' => new external_multiple_structure(
-                new external_single_structure(
-                    [
-                    'id' => new external_value(PARAM_INT, 'Quiz ID'),
-                    'name' => new external_value(PARAM_TEXT, 'Quiz name'),
+                'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+                'message' => new external_multiple_structure(
+                    new external_single_structure(
+                        [
+                            'id' => new external_value(PARAM_INT, 'Quiz ID'),
+                            'name' => new external_value(PARAM_TEXT, 'Quiz name'),
 
-                    ]
+                        ]
+                    )
                 )
-            )
             ]
         );
     }
@@ -865,19 +935,20 @@ WHERE l.id $insql
      *
      * @return external_single_structure
      */
-    public static function get_groups_returns() {
+    public static function get_groups_returns()
+    {
         return new external_single_structure(
             [
-            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
-            'message' => new external_multiple_structure(
-                new external_single_structure(
-                    [
-                    'id' => new external_value(PARAM_INT, 'Quiz ID'),
-                    'name' => new external_value(PARAM_TEXT, 'Quiz name'),
+                'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+                'message' => new external_multiple_structure(
+                    new external_single_structure(
+                        [
+                            'id' => new external_value(PARAM_INT, 'Quiz ID'),
+                            'name' => new external_value(PARAM_TEXT, 'Quiz name'),
 
-                    ]
+                        ]
+                    )
                 )
-            )
             ]
         );
     }
@@ -889,11 +960,12 @@ WHERE l.id $insql
      *
      * @return external_single_structure
      */
-    public static function courses_records_returns() {
+    public static function courses_records_returns()
+    {
         return new external_single_structure(
             [
-            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
-            'message' => new external_value(PARAM_TEXT, 'Message describing the result'),
+                'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+                'message' => new external_value(PARAM_TEXT, 'Message describing the result'),
             ]
         );
     }
@@ -904,11 +976,12 @@ WHERE l.id $insql
      *
      * @return external_single_structure
      */
-    public static function stop_process_returns() {
+    public static function stop_process_returns()
+    {
         return new external_single_structure(
             [
-            'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
-            'message' => new external_multiple_structure(PARAM_TEXT, 'Descripe data')
+                'status' => new external_value(PARAM_INT, '0 = error, 1 = success'),
+                'message' => new external_multiple_structure(PARAM_TEXT, 'Descripe data')
             ]
         );
     }
