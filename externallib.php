@@ -353,7 +353,6 @@ class local_restrict_external extends external_api
                     if ($flawless < 0) {
                         break;
                     }
-                    // $ip = array_shift($available_ips);.
 
                     $record = new stdClass();
                     $record->userid = $flatusers[$flawless]->user_id;

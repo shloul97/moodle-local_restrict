@@ -65,7 +65,17 @@ if ($mform->is_cancelled()) {
         JOIN {quiz} q on ue.examid = q.id
         JOIN {course} c on q.course = c.id
         JOIN {groups} g on g.id = ue.groupid
-        JOIN {user} u where u.id = ue.userid AND u.username > 20000
+        JOIN {user} u where u.id = ue.userid
+        AND u.id NOT IN (
+        SELECT ra.userid
+        FROM {role_assignments} ra
+        JOIN {context} ctx ON ctx.id = ra.contextid
+        JOIN {role} r ON r.id = ra.roleid
+        WHERE ra.userid = u.id
+            AND ctx.contextlevel = 50
+            AND ctx.instanceid = c.id
+            AND r.shortname IN (\'manager\',\'editingteacher\', \'teacher\')
+        )
         group by c.idnumber
     '
     );
