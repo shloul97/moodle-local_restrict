@@ -44,7 +44,7 @@ $mform = new insert_groups();
 $PAGE->set_url(new moodle_url("/local/restrict/insert_groups.php"));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title("Add Users");
+$PAGE->set_title(get_string('groupstitle','local_restrict'));
 
 // JQuery.
 $PAGE->requires->jquery_plugin('ui');

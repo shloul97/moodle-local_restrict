@@ -62,21 +62,29 @@ $string['manual_ip_place'] = "One IP per line (Separated) by comma with device n
 ... Exp:\n127.0.1.1,1 \n127.0.0.2,2\n...";
 $string['device_ip'] = 'Device IP';
 
+
+
 /* Headers */
 $string['quiz_distrputed_header'] = 'Distpute By Quiz: ';
 $string['insertlabs_header'] = 'Insert Labs';
 $string['insertips_header'] = 'Insert Ranges';
 $string['insertgroups_header'] = 'Distrpute users';
 $string['updatelabs_header'] = 'Update Labs';
-$string['search'] = 'Search';
+$string['ip'] = 'IP';
+$string['lab'] = 'Lab';
+$string['status'] = 'Status';
+$string['action'] = 'Action';
+$string['search'] = 'Search...';
 
 
 /* Templates */
+$string['selectall'] = 'Select All';
 $string['action'] = "Action";
 $string['course_table_moodleid'] = "Course Moodle Id";
 $string['course_table_id'] = "Course Id Number";
 $string['course_table_name'] = "Course Name";
 $string['insertranges'] = "Insert Ranges";
+$string['devicefilter'] = "Devices Filter:";
 
 /* metadata */
 $string['privacy:metadata:local_restrict_user_exam'] =
@@ -96,9 +104,26 @@ $string['statustxt'] = "Status Text: ";
 $string['response'] = "Response: ";
 $string['args'] = "Arguments: ";
 
+$string['rmadmin'] = "Remove Admin";
+$string['mkadmin'] = "Make Admin";
+$string['suspend'] = "Suspend";
+$string['activate'] = "Activate";
+$string['inactive'] = "Inactive";
+$string['active'] = "Active";
+
 $string['jserr'] = "Error: ";
 $string['ajxerr'] = "AJAX Error: ";
 
 $string['delconfirm'] = "Are You sure you want to delete record ?";
 $string['mkadminconfirm'] = "Are You sure you want to make this device Admin ?";
 $string['adminremovecofnirm'] = "Are You sure you want to Remove this device From Admin ?";
+$string['failedalert'] = "Failed to load strings:";
+$string['selectcourselabs'] = "Please Select Course and Labs";
+
+/* Titles */
+$string['indextitle'] = "Secure Exam Access | Index";
+$string['inquirytitle']= "Secure Exam Access | inqury";
+$string['groupstitle']= "Secure Exam Access | Distrputer";
+$string['lapstitle']= "Secure Exam Access | Lab Insertion";
+$string['rangestitle']= "Secure Exam Access | Labs Ips Ranges";
+$string['updatetitle']= "Secure Exam Access | Labs Update";

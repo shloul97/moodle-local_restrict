@@ -42,7 +42,7 @@ $mform = new insert_labs();
 $PAGE->set_url(new moodle_url("/local/restrict/add_labs.php"));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title("Lab Insertion");
+$PAGE->set_title(get_string('lapstitle','local_restrict'));
 
 if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {

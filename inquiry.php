@@ -40,7 +40,7 @@ $mform = new inquiry();
 
 $PAGE->set_url(new moodle_url("/local/restrict/inquiry.php"));
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title("Secure Exam Access | inqury");
+$PAGE->set_title(get_string('inquirytitle','local_restrict'));
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->js_call_amd('local_restrict/courses', 'init');
 

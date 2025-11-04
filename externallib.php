@@ -382,7 +382,7 @@ class local_restrict_external extends external_api
                 }
             }
 
-            return ['status' => 1, 'message' => get_string('distrputed_sucess', 'local_restrict') . ' ' . $teststr];
+            return ['status' => 1, 'message' => get_string('distrputed_sucess', 'local_restrict')];
 
         }
 

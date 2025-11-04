@@ -27,13 +27,17 @@ define(
                 var statustxt;
                 var response;
                 var args;
+                var delconfirm;
+                var failedalert;
 
                 var strings = [
                 { key: 'msg', component: 'local_restrict' },
                 { key: 'status', component: 'local_restrict' },
                 { key: 'statustxt', component: 'local_restrict' },
                 { key: 'response', component: 'local_restrict' },
-                { key: 'args', component: 'local_restrict' }
+                { key: 'args', component: 'local_restrict' },
+                { key: 'delconfirm', component: 'local_restrict' },
+                { key: 'failedalert', component: 'local_restrict' }
                 ];
 
                 str.get_strings(strings).then(
@@ -43,10 +47,12 @@ define(
                         statustxt = results[2];
                         response = results[3];
                         args = results[4];
+                        delconfirm = results[5];
+                        failedalert = results[6];
                     }
                 ).catch(
                     function (e) {
-                        alert('Failed to load strings:', e);
+                        alert(failedalert, e);
                     }
                 );
 
@@ -57,7 +63,7 @@ define(
                         var action = $(this).attr('data-action');
 
                         if (action === 'del') {
-                            if (confirm("Are You sure you want to delete record ?") == true) {
+                            if (confirm(delconfirm) == true) {
                                 var courseargs = {
                                     courseid: parseInt(courseId),
                                     action: action.toString()

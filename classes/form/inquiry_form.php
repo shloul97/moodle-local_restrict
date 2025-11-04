@@ -42,7 +42,7 @@ class inquiry extends moodleform {
         '
         );
 
-        $options = array('' => 'Select Course'); // Blank value with a prompt.
+        $options = array('' => get_string('selectcourse','local_restrict')); // Blank value with a prompt.
 
         foreach ($records as $choice) {
             $options[$choice->id] = $choice->fullname . ' - ' . $choice->idnumber;

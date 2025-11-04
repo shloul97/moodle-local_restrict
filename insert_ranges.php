@@ -45,7 +45,7 @@ $mformadmin = new insert_ranges_admin();
 $PAGE->set_url(new moodle_url("/local/restrict/insert_ranges.php"));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title("Insert Ranges");
+$PAGE->set_title(get_string('rangestitle','local_restrict'));
 
 if ($mform->is_cancelled()) {
 } else if ($fromform = $mform->get_data()) {

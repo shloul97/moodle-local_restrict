@@ -28,16 +28,19 @@ define(
                 var mkadminconfirm;
                 var adminremovecofnirm;
                 var delconfirm;
+                var failedalert;
+
+
 
 
                 var strings = [
-                { key: 'ajxerr', component: 'local_restrict' },
-                { key: 'jserr', component: 'local_restrict' },
-                { key: 'args', component: 'local_restrict' },
-                { key: 'mkadminconfirm', component: 'local_restrict' },
-                { key: 'adminremovecofnirm', component: 'local_restrict' },
-                { key: 'delconfirm', component: 'local_restrict' }
-
+                    { key: 'ajxerr', component: 'local_restrict' },
+                    { key: 'jserr', component: 'local_restrict' },
+                    { key: 'args', component: 'local_restrict' },
+                    { key: 'mkadminconfirm', component: 'local_restrict' },
+                    { key: 'adminremovecofnirm', component: 'local_restrict' },
+                    { key: 'delconfirm', component: 'local_restrict' },
+                    { key: 'failedalert', component: 'local_restrict' }
                 ];
 
                 str.get_strings(strings).then(
@@ -48,12 +51,29 @@ define(
                         mkadminconfirm = results[3];
                         adminremovecofnirm = results[4];
                         delconfirm = results[5];
+                        failedalert = results[6];
                     }
                 ).catch(
                     function (e) {
-                        alert('Failed to load strings:', e);
+                        alert(failedalert, e);
                     }
                 );
+                const stringKeys = [
+                    'rmadmin', 'mkadmin', 'suspend',
+                    'activate', 'active', 'inactive'
+                ];
+
+                const strings = stringKeys.map(key => ({ key, component: 'local_restrict' }));
+
+                str.get_strings(strings)
+                    .then(results => {
+                        const localized = Object.fromEntries(stringKeys.map((key, i) => [key, results[i]]));
+                        // You can now access them as:
+                        // localized.rmadmin, localized.mkadmin, etc.
+                    })
+                    .catch(e => {
+                        alert(failedalert, e);
+                    });
 
 
                 $('button[name=action-btn]').click(
@@ -120,12 +140,12 @@ define(
                                     if (action != 'del') {
                                         btn.attr('data-action', dataAction);
                                         btn.toggleClass('btn-warning btn-success');
-                                        if (btn.html() === "Suspend") {
-                                            btn.html("Activate");
-                                            spanText.html("Inactive");
+                                        if (btn.html() === localized.suspend) {
+                                            btn.html(localized.activate);
+                                            spanText.html(localized.inactive);
                                         } else {
-                                            btn.html("Suspend");
-                                            spanText.html("Active");
+                                            btn.html(localized.suspend);
+                                            spanText.html(localized.active);
                                         }
 
                                         spanText.toggleClass('text-success text-danger');
@@ -194,11 +214,11 @@ define(
                                         btn.toggleClass('btn-primary btn-secondary');
                                         if (dataAction === "mkadmin") {
                                             dataAction = "rmadmin";
-                                            btn.html("Remove Admin");
+                                            btn.html(localized.rmadmin);
                                             btn.attr('data-action', 'rmadmin');
                                         }
                                         else if (dataAction === "rmadmin") {
-                                            btn.html("Make Admin");
+                                            btn.html(localized.mkadmin);
                                             btn.attr('data-action', 'mkadmin');
                                         }
                                     }

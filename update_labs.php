@@ -39,7 +39,7 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_url(new moodle_url("/local/restrict/index.php"));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title("Restrict User");
+$PAGE->set_title(get_string('updatetitle','local_restrict'));
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->js_call_amd(
     'local_restrict/action', 'init', [

@@ -39,7 +39,7 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_url(new moodle_url("/local/restrict/index.php"));
 
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title("Secure Exam Access");
+$PAGE->set_title(get_string('indextitle','local_restrict'));
 
 
 

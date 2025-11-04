@@ -26,13 +26,20 @@ define(['jquery', 'core/ajax','core/str'], function ($, Ajax,str) {
             var statustxt;
             var response;
             var args;
+            var delconfirm;
+            var failedalert;
+            var select_course;
 
             var strings = [
                 { key: 'msg', component: 'local_restrict' },
                 { key: 'status', component: 'local_restrict' },
                 { key: 'statustxt', component: 'local_restrict' },
                 { key: 'response', component: 'local_restrict' },
-                { key: 'args', component: 'local_restrict' }
+                { key: 'args', component: 'local_restrict' },
+                { key: 'delconfirm', component: 'local_restrict' },
+                { key: 'failedalert', component: 'local_restrict' },
+                { key: 'selectcourselabs', component: 'local_restrict' }
+
             ];
 
              str.get_strings(strings).then(function (results) {
@@ -41,8 +48,10 @@ define(['jquery', 'core/ajax','core/str'], function ($, Ajax,str) {
                 statustxt = results[2];
                 response = results[3];
                 args = results[4];
+                failedalert = results[6];
+                select_course = results[7];
             }).catch(function (e) {
-                alert('Failed to load strings:', e);
+                alert(failedalert, e);
             });
 
 
@@ -59,7 +68,7 @@ define(['jquery', 'core/ajax','core/str'], function ($, Ajax,str) {
                 let labs_debug = data.filter(x => x.name === "labs[]").map(x => x.value);
 
                 if(!course_debug.length|| labs_debug.length <= 0){
-                    alert("Please Select Course and Labs");
+                    alert(select_course);
                     return;
                 }
 

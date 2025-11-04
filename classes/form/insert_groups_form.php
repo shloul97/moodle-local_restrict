@@ -42,12 +42,13 @@ class insert_groups extends moodleform {
 
         // Courses Dropdown Menu.
         $html = '<div class="dropdown-checkbox">
-            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownMenu"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 ' . get_string('selectcourse', 'local_restrict') . '
             </button>
             <div class="dropdown-menu p-3" aria-labelledby="dropdownMenu">
                 <!-- Search input for filtering options -->
-                <input type="text" class="form-control" id="dropdownSearch" placeholder="Search...">
+                <input type="text" class="form-control" id="dropdownSearch" placeholder="'.get_string('search','local_restrict').'">
 
                 <!-- Scrollable area for checkboxes -->
                 <div class="checkbox-container" style="max-height: 200px; overflow-y: auto;">
