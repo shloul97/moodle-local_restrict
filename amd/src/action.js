@@ -30,10 +30,17 @@ define(
                 var delconfirm;
                 var failedalert;
 
+                var mkadmin;
+                var rmadmin;
+                var active;
+                var activate;
+                var inactive;
+                var suspend;
 
 
 
-                var strings = [
+
+                var long_strings = [
                     { key: 'ajxerr', component: 'local_restrict' },
                     { key: 'jserr', component: 'local_restrict' },
                     { key: 'args', component: 'local_restrict' },
@@ -43,7 +50,7 @@ define(
                     { key: 'failedalert', component: 'local_restrict' }
                 ];
 
-                str.get_strings(strings).then(
+                str.get_strings(long_strings).then(
                     function (results) {
                         ajxerr = results[0];
                         jserr = results[1];
@@ -70,6 +77,12 @@ define(
                         const localized = Object.fromEntries(stringKeys.map((key, i) => [key, results[i]]));
                         // You can now access them as:
                         // localized.rmadmin, localized.mkadmin, etc.
+                        rmadmin = localized.rmadmin;
+                        mkadmin = localized.mkadmin;
+                        activate = localized.activate;
+                        inactive = localized.inactive;
+                        suspend = localized.suspend;
+                        active = localized.active;
                     })
                     .catch(e => {
                         alert(failedalert, e);
@@ -140,12 +153,12 @@ define(
                                     if (action != 'del') {
                                         btn.attr('data-action', dataAction);
                                         btn.toggleClass('btn-warning btn-success');
-                                        if (btn.html() === localized.suspend) {
-                                            btn.html(localized.activate);
-                                            spanText.html(localized.inactive);
+                                        if (btn.html() === suspend) {
+                                            btn.html(activate);
+                                            spanText.html(inactive);
                                         } else {
-                                            btn.html(localized.suspend);
-                                            spanText.html(localized.active);
+                                            btn.html(suspend);
+                                            spanText.html(active);
                                         }
 
                                         spanText.toggleClass('text-success text-danger');
@@ -214,11 +227,11 @@ define(
                                         btn.toggleClass('btn-primary btn-secondary');
                                         if (dataAction === "mkadmin") {
                                             dataAction = "rmadmin";
-                                            btn.html(localized.rmadmin);
+                                            btn.html(rmadmin);
                                             btn.attr('data-action', 'rmadmin');
                                         }
                                         else if (dataAction === "rmadmin") {
-                                            btn.html(localized.mkadmin);
+                                            btn.html(mkadmin);
                                             btn.attr('data-action', 'mkadmin');
                                         }
                                     }

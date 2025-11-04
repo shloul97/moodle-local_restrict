@@ -26,7 +26,6 @@ define(['jquery', 'core/ajax','core/str'], function ($, Ajax,str) {
             var statustxt;
             var response;
             var args;
-            var delconfirm;
             var failedalert;
             var select_course;
 
